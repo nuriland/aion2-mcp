@@ -1,0 +1,43 @@
+{
+    "contents": [
+        {
+            "id": 110120001,
+            "name": "應龍王巨劍",
+            "image": "https://assets.playnccdn.com/static-aion2-gamedata/resources/Icon_WP_GS_0110_T05.png",
+            "grade": "Epic",
+            "options": [
+                "暴擊 150",
+                "PVE傷害增幅 5%",
+                "命中 100",
+                "格擋 150",
+                "攻擊力 463 ~ 627"
+            ],
+            "favorite": false,
+            "tradable": true,
+            "categoryName": "巨劍"
+        },
+        {
+            "id": 110120002,
+            "name": "夔龍王巨劍",
+            "image": "https://assets.playnccdn.com/static-aion2-gamedata/resources/Icon_WP_GS_0110_T05.png",
+            "grade": "Epic",
+            "options": [
+                "暴擊 150",
+                "PVE傷害增幅 5%",
+                "命中 100",
+                "格擋 150",
+                "攻擊力 463 ~ 627"
+            ],
+            "favorite": false,
+            "tradable": true,
+            "categoryName": "巨劍"
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "size": 2,
+        "lastPage": 2,
+        "total": 4,
+        "limit": 10000
+    }
+}
