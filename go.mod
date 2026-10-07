@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/google/jsonschema-go v0.4.3
 	github.com/modelcontextprotocol/go-sdk v1.8.0
-	github.com/nuriland/aion2-api v0.4.0
+	github.com/nuriland/aion2-api v0.4.1
 	golang.org/x/time v0.15.0
 )
 
