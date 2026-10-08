@@ -124,5 +124,5 @@ func serverNamed(ctx context.Context, c aion2.Aion2Client, name string) (aion2.S
 			return s, nil
 		}
 	}
-	return aion2.Server{}, fmt.Errorf("no server %q on %s; list_servers has their names, which are in the region's language", name, c.Region())
+	return aion2.Server{}, fmt.Errorf("no server %q on %s. list_servers has their names, which are in the region's language", name, c.Region())
 }
