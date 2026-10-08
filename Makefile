@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help check fmt vet lint test test-v cover e2e probe mcp
+.PHONY: help check fmt vet lint test test-v cover
 
 STATICCHECK := honnef.co/go/tools/cmd/staticcheck@v0.8.1
 
