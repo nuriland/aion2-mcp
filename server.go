@@ -83,7 +83,7 @@ func explain(err error) error {
 	var hint string
 	switch {
 	case errors.Is(err, aion2.ErrNoRoute):
-		hint = "KR's site API answers 404 from outside Korea, except for boards and styles. Try a TW or Global region instead."
+		hint = "On KR this is the geofence, its site answers 404 from outside Korea except for boards and styles, so try TW or a Global region. Elsewhere NC has moved the path"
 	case errors.Is(err, aion2.ErrNoSeason):
 		hint = "NC has the public ranking boards turned off, so there is nothing to fetch until they return"
 	case errors.Is(err, aion2.ErrFeatureUnavailable):
