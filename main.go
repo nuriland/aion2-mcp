@@ -149,7 +149,7 @@ type clients struct {
 	dial   func(aion2.Region, aion2.Locale) (aion2.Aion2Client, error)
 
 	mu    sync.Mutex
-	cache map[[2]string]aion2.Aion2Client
+	cache map[scope]aion2.Aion2Client // one client per region and locale, made on first use
 }
 
 // get resolves an empty region to the default one
@@ -164,7 +164,7 @@ func (c *clients) get(region aion2.Region, locale aion2.Locale) (aion2.Aion2Clie
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	key := [2]string{string(region), string(locale)}
+	key := scope{region, locale}
 	if client, ok := c.cache[key]; ok {
 		return client, nil
 	}
@@ -173,7 +173,7 @@ func (c *clients) get(region aion2.Region, locale aion2.Locale) (aion2.Aion2Clie
 		return nil, err
 	}
 	if c.cache == nil {
-		c.cache = map[[2]string]aion2.Aion2Client{}
+		c.cache = map[scope]aion2.Aion2Client{}
 	}
 	c.cache[key] = client
 	return client, nil
