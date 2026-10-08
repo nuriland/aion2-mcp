@@ -236,10 +236,10 @@ func golden(t *testing.T, name string, got []byte) {
 	}
 	want, err := os.ReadFile(path)
 	if err != nil {
-		t.Fatalf("%v; run go test ./cmd/aion2-mcp -update", err)
+		t.Fatalf("%v; run go test . -update", err)
 	}
 	if !bytes.Equal(bytes.ReplaceAll(want, []byte("\r\n"), []byte("\n")), got) {
-		t.Errorf("%s changed; if that was meant, run go test ./cmd/aion2-mcp -update and review the diff", path)
+		t.Errorf("%s changed; if that was meant, run go test . -update and review the diff", path)
 	}
 }
 
