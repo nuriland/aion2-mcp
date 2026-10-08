@@ -76,6 +76,11 @@ var schemas = map[reflect.Type]*jsonschema.Schema{
 	reflect.TypeFor[styleSort]():   enum("", "DOWNLOADS", "LIKES"),
 	reflect.TypeFor[stylePeriod](): enum("", "DAY_2", "DAY_7", "DAY_30", "DAY_100", "ALL"),
 	reflect.TypeFor[styleField]():  enum("", "name", "item", "tag"),
+
+	// A tree, which jsonschema-go cannot follow, so the children stay an array of anything
+	reflect.TypeFor[aion2.ItemCategory](): {Type: "object", Properties: map[string]*jsonschema.Schema{
+		"id": {Type: "string"}, "name": {Type: "string"}, "child": {Types: []string{"null", "array"}},
+	}},
 }
 
 func enum[T ~string](description string, values ...T) *jsonschema.Schema {

@@ -41,11 +41,11 @@ type commentsArgs struct {
 	Limit  listLimit `json:"limit,omitempty" jsonschema:"at most this many, newest first (default 20)"`
 }
 
-// postText is a post with its body flattened to text in place of the HTML
+// postText is a post with its body as text, or as NC's HTML when that was the format asked for
 type postText struct {
 	*aion2.Post
 
-	Text string `json:"text"`
+	Text string `json:"text,omitempty"`
 }
 
 // listPosts stops paging the board once it has the limit
@@ -73,16 +73,17 @@ func listPinnedPosts(ctx context.Context, c aion2.Aion2Client, args boardArgs) (
 	return list[aion2.Post]{Items: posts}, err
 }
 
-// getPost answers html with the post as NC sends it, and text, the default, with a postText
-func getPost(ctx context.Context, c aion2.Aion2Client, args postArgs) (any, error) {
+// getPost flattens the body to text unless html was asked for
+func getPost(ctx context.Context, c aion2.Aion2Client, args postArgs) (*postText, error) {
 	post, err := c.Post(ctx, args.Board, args.ID)
-	if err != nil || args.Format == "html" {
-		return post, err
+	if err != nil {
+		return nil, err
 	}
-
-	text := htmlText(post.HTML)
-	post.HTML = ""
-	return postText{post, text}, nil
+	out := &postText{Post: post}
+	if args.Format != "html" {
+		out.Text, post.HTML = htmlText(post.HTML), ""
+	}
+	return out, nil
 }
 
 func listComments(ctx context.Context, c aion2.Aion2Client, args commentsArgs) (list[aion2.Comment], error) {

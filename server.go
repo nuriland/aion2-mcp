@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/google/jsonschema-go/jsonschema"
@@ -32,29 +33,34 @@ func newServer(cs *clients) *mcp.Server {
 
 // add registers a tool that calls one region
 func add[Args scoped, Out any](s *mcp.Server, cs *clients, name, description string, h func(context.Context, aion2.Aion2Client, Args) (Out, error)) {
-	schema, err := jsonschema.For[Args](&jsonschema.ForOptions{TypeSchemas: schemas})
-	if err != nil {
-		// @REVIEW: not a big fan of panicking here, ideally never panics at all
-		panic(fmt.Sprintf("tool %s: %v", name, err))
-	}
-
 	t := tool(name, description)
-	t.InputSchema = schema
+	t.InputSchema, t.OutputSchema = schemaOf[Args](), schemaOf[Out]()
 
-	mcp.AddTool(s, t, func(ctx context.Context, _ *mcp.CallToolRequest, args Args) (*mcp.CallToolResult, any, error) {
+	// Out, not any, so that the SDK validates every reply against the output schema
+	mcp.AddTool(s, t, func(ctx context.Context, _ *mcp.CallToolRequest, args Args) (*mcp.CallToolResult, Out, error) {
+		var out Out
 		target := args.target()
 		client, err := cs.get(target.Region, target.Locale)
 		if err != nil {
-			return nil, nil, err
+			return nil, out, err
 		}
-
-		out, err := h(ctx, client, args)
-		if err != nil {
-			return nil, nil, explain(err)
-		}
-
-		return nil, out, nil
+		out, err = h(ctx, client, args)
+		return nil, out, explain(err)
 	})
+}
+
+// schemaOf is T's schema, with the enums and bounds in schemas. A T it cannot describe is a programming error, found at startup
+func schemaOf[T any]() *jsonschema.Schema {
+	rt := reflect.TypeFor[T]()
+	if rt.Kind() == reflect.Pointer {
+		rt = rt.Elem() // a nil reply goes out as the zero value, never as null
+	}
+	s, err := jsonschema.ForType(rt, &jsonschema.ForOptions{TypeSchemas: schemas})
+	if err != nil {
+		// @REVIEW: not a big fan of panicking here, ideally never panics at all. mcp.AddTool panics the same way though
+		panic(err)
+	}
+	return s
 }
 
 // tool is the definition every tool shares

@@ -51,7 +51,674 @@
       ],
       "type": "object"
     },
-    "name": "find_character"
+    "name": "find_character",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "classId": {
+                "type": "integer"
+              },
+              "className": {
+                "type": "string"
+              },
+              "imageUrl": {
+                "type": "string"
+              },
+              "level": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "race": {
+                "type": "integer"
+              },
+              "ref": {
+                "additionalProperties": false,
+                "properties": {
+                  "characterId": {
+                    "type": "string"
+                  },
+                  "serverId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "serverId",
+                  "characterId"
+                ],
+                "type": "object"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "serverName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "region",
+              "name",
+              "serverName",
+              "classId",
+              "className",
+              "race",
+              "level",
+              "imageUrl"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "character": {
+          "additionalProperties": false,
+          "properties": {
+            "daevanion": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "icon": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "open": {
+                    "type": "boolean"
+                  },
+                  "openNodeCount": {
+                    "type": "integer"
+                  },
+                  "openPercent": {
+                    "type": "integer"
+                  },
+                  "totalNodeCount": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "icon",
+                  "open",
+                  "openNodeCount",
+                  "totalNodeCount",
+                  "openPercent"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "profile": {
+              "additionalProperties": false,
+              "properties": {
+                "characterLevel": {
+                  "type": "integer"
+                },
+                "characterName": {
+                  "type": "string"
+                },
+                "classId": {
+                  "type": "integer"
+                },
+                "className": {
+                  "type": "string"
+                },
+                "combatPower": {
+                  "type": "integer"
+                },
+                "genderName": {
+                  "type": "string"
+                },
+                "profileImage": {
+                  "type": "string"
+                },
+                "raceId": {
+                  "type": "integer"
+                },
+                "ref": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "characterId": {
+                      "type": "string"
+                    },
+                    "serverId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "serverId",
+                    "characterId"
+                  ],
+                  "type": "object"
+                },
+                "regionName": {
+                  "type": "string"
+                },
+                "serverName": {
+                  "type": "string"
+                },
+                "titleName": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "characterName",
+                "characterLevel",
+                "classId",
+                "className",
+                "genderName",
+                "raceId",
+                "serverName",
+                "regionName",
+                "combatPower",
+                "titleName",
+                "profileImage"
+              ],
+              "type": "object"
+            },
+            "rankings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "gradeIcon": {
+                    "type": "string"
+                  },
+                  "gradeName": {
+                    "type": "string"
+                  },
+                  "isNew": {
+                    "type": "boolean"
+                  },
+                  "point": {
+                    "type": "number"
+                  },
+                  "prevRank": {
+                    "type": "integer"
+                  },
+                  "rank": {
+                    "type": "integer"
+                  },
+                  "rankChange": {
+                    "type": "integer"
+                  },
+                  "rankingContentsName": {
+                    "type": "string"
+                  },
+                  "rankingContentsType": {
+                    "type": "integer"
+                  },
+                  "rankingType": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "rankingContentsType",
+                  "rankingContentsName",
+                  "rankingType",
+                  "rank",
+                  "prevRank",
+                  "rankChange",
+                  "isNew",
+                  "point",
+                  "gradeName",
+                  "gradeIcon"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "region": {
+              "description": "the region, empty is the server's default",
+              "enum": [
+                "kr",
+                "tw",
+                "nae",
+                "naw",
+                "eu",
+                "sa",
+                "asia"
+              ],
+              "type": "string"
+            },
+            "stats": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "statSecondList": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": [
+                      "null",
+                      "array"
+                    ]
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type",
+                  "name",
+                  "value",
+                  "statSecondList"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "titles": {
+              "additionalProperties": false,
+              "properties": {
+                "ownedCount": {
+                  "type": "integer"
+                },
+                "titleList": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "equipCategory": {
+                        "type": "string"
+                      },
+                      "equipStatList": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": [
+                          "null",
+                          "array"
+                        ]
+                      },
+                      "grade": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "ownedCount": {
+                        "type": "integer"
+                      },
+                      "ownedPercent": {
+                        "type": "integer"
+                      },
+                      "statList": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": [
+                          "null",
+                          "array"
+                        ]
+                      },
+                      "totalCount": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "grade",
+                      "equipCategory",
+                      "totalCount",
+                      "ownedCount",
+                      "ownedPercent",
+                      "statList",
+                      "equipStatList"
+                    ],
+                    "type": "object"
+                  },
+                  "type": [
+                    "null",
+                    "array"
+                  ]
+                },
+                "totalCount": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "totalCount",
+                "ownedCount",
+                "titleList"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "region",
+            "profile",
+            "stats",
+            "titles",
+            "rankings",
+            "daevanion"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "equipment": {
+          "additionalProperties": false,
+          "properties": {
+            "pet": {
+              "additionalProperties": false,
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "level",
+                "icon"
+              ],
+              "type": [
+                "null",
+                "object"
+              ]
+            },
+            "ref": {
+              "additionalProperties": false,
+              "properties": {
+                "characterId": {
+                  "type": "string"
+                },
+                "serverId": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serverId",
+                "characterId"
+              ],
+              "type": "object"
+            },
+            "region": {
+              "description": "the region, empty is the server's default",
+              "enum": [
+                "kr",
+                "tw",
+                "nae",
+                "naw",
+                "eu",
+                "sa",
+                "asia"
+              ],
+              "type": "string"
+            },
+            "skills": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "acquired": {
+                    "type": "boolean"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "equip": {
+                    "type": "boolean"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "needLevel": {
+                    "type": "integer"
+                  },
+                  "skillLevel": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "category",
+                  "skillLevel",
+                  "needLevel",
+                  "acquired",
+                  "equip",
+                  "icon"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "skins": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "enchantLevel": {
+                    "type": "integer"
+                  },
+                  "exceedLevel": {
+                    "type": "integer"
+                  },
+                  "grade": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "slotPos": {
+                    "type": "integer"
+                  },
+                  "slotPosName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "slotPos",
+                  "slotPosName",
+                  "id",
+                  "name",
+                  "grade",
+                  "enchantLevel",
+                  "exceedLevel",
+                  "icon"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "slots": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "enchantLevel": {
+                    "type": "integer"
+                  },
+                  "exceedLevel": {
+                    "type": "integer"
+                  },
+                  "grade": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "slotPos": {
+                    "type": "integer"
+                  },
+                  "slotPosName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "slotPos",
+                  "slotPosName",
+                  "id",
+                  "name",
+                  "grade",
+                  "enchantLevel",
+                  "exceedLevel",
+                  "icon"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "wing": {
+              "additionalProperties": false,
+              "properties": {
+                "enchantLevel": {
+                  "type": "integer"
+                },
+                "grade": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "grade",
+                "enchantLevel",
+                "icon"
+              ],
+              "type": [
+                "null",
+                "object"
+              ]
+            },
+            "wingSkin": {
+              "additionalProperties": false,
+              "properties": {
+                "enchantLevel": {
+                  "type": "integer"
+                },
+                "grade": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "grade",
+                "enchantLevel",
+                "icon"
+              ],
+              "type": [
+                "null",
+                "object"
+              ]
+            }
+          },
+          "required": [
+            "region",
+            "ref",
+            "slots",
+            "skins",
+            "pet",
+            "wing",
+            "wingSkin",
+            "skills"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -106,7 +773,314 @@
       ],
       "type": "object"
     },
-    "name": "get_character"
+    "name": "get_character",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "daevanion": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "open": {
+                "type": "boolean"
+              },
+              "openNodeCount": {
+                "type": "integer"
+              },
+              "openPercent": {
+                "type": "integer"
+              },
+              "totalNodeCount": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "icon",
+              "open",
+              "openNodeCount",
+              "totalNodeCount",
+              "openPercent"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "profile": {
+          "additionalProperties": false,
+          "properties": {
+            "characterLevel": {
+              "type": "integer"
+            },
+            "characterName": {
+              "type": "string"
+            },
+            "classId": {
+              "type": "integer"
+            },
+            "className": {
+              "type": "string"
+            },
+            "combatPower": {
+              "type": "integer"
+            },
+            "genderName": {
+              "type": "string"
+            },
+            "profileImage": {
+              "type": "string"
+            },
+            "raceId": {
+              "type": "integer"
+            },
+            "ref": {
+              "additionalProperties": false,
+              "properties": {
+                "characterId": {
+                  "type": "string"
+                },
+                "serverId": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serverId",
+                "characterId"
+              ],
+              "type": "object"
+            },
+            "regionName": {
+              "type": "string"
+            },
+            "serverName": {
+              "type": "string"
+            },
+            "titleName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ref",
+            "characterName",
+            "characterLevel",
+            "classId",
+            "className",
+            "genderName",
+            "raceId",
+            "serverName",
+            "regionName",
+            "combatPower",
+            "titleName",
+            "profileImage"
+          ],
+          "type": "object"
+        },
+        "rankings": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "gradeIcon": {
+                "type": "string"
+              },
+              "gradeName": {
+                "type": "string"
+              },
+              "isNew": {
+                "type": "boolean"
+              },
+              "point": {
+                "type": "number"
+              },
+              "prevRank": {
+                "type": "integer"
+              },
+              "rank": {
+                "type": "integer"
+              },
+              "rankChange": {
+                "type": "integer"
+              },
+              "rankingContentsName": {
+                "type": "string"
+              },
+              "rankingContentsType": {
+                "type": "integer"
+              },
+              "rankingType": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "rankingContentsType",
+              "rankingContentsName",
+              "rankingType",
+              "rank",
+              "prevRank",
+              "rankChange",
+              "isNew",
+              "point",
+              "gradeName",
+              "gradeIcon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "stats": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "statSecondList": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "type": {
+                "type": "string"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "name",
+              "value",
+              "statSecondList"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "titles": {
+          "additionalProperties": false,
+          "properties": {
+            "ownedCount": {
+              "type": "integer"
+            },
+            "titleList": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "equipCategory": {
+                    "type": "string"
+                  },
+                  "equipStatList": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": [
+                      "null",
+                      "array"
+                    ]
+                  },
+                  "grade": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "ownedCount": {
+                    "type": "integer"
+                  },
+                  "ownedPercent": {
+                    "type": "integer"
+                  },
+                  "statList": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": [
+                      "null",
+                      "array"
+                    ]
+                  },
+                  "totalCount": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "grade",
+                  "equipCategory",
+                  "totalCount",
+                  "ownedCount",
+                  "ownedPercent",
+                  "statList",
+                  "equipStatList"
+                ],
+                "type": "object"
+              },
+              "type": [
+                "null",
+                "array"
+              ]
+            },
+            "totalCount": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "totalCount",
+            "ownedCount",
+            "titleList"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "region",
+        "profile",
+        "stats",
+        "titles",
+        "rankings",
+        "daevanion"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -166,7 +1140,127 @@
       ],
       "type": "object"
     },
-    "name": "get_daevanion"
+    "name": "get_daevanion",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "boardId": {
+          "type": "integer"
+        },
+        "nodeList": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "col": {
+                "type": "integer"
+              },
+              "effectList": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "grade": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "nodeId": {
+                "type": "integer"
+              },
+              "open": {
+                "type": "boolean"
+              },
+              "row": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "nodeId",
+              "name",
+              "grade",
+              "type",
+              "icon",
+              "row",
+              "col",
+              "open",
+              "effectList"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "openSkillEffectList": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "openStatEffectList": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "ref": {
+          "additionalProperties": false,
+          "properties": {
+            "characterId": {
+              "type": "string"
+            },
+            "serverId": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "serverId",
+            "characterId"
+          ],
+          "type": "object"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "region",
+        "ref",
+        "boardId",
+        "nodeList",
+        "openSkillEffectList",
+        "openStatEffectList"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -221,7 +1315,279 @@
       ],
       "type": "object"
     },
-    "name": "get_equipment"
+    "name": "get_equipment",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "pet": {
+          "additionalProperties": false,
+          "properties": {
+            "icon": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            },
+            "level": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "level",
+            "icon"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "ref": {
+          "additionalProperties": false,
+          "properties": {
+            "characterId": {
+              "type": "string"
+            },
+            "serverId": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "serverId",
+            "characterId"
+          ],
+          "type": "object"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "skills": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "acquired": {
+                "type": "boolean"
+              },
+              "category": {
+                "type": "string"
+              },
+              "equip": {
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "needLevel": {
+                "type": "integer"
+              },
+              "skillLevel": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "category",
+              "skillLevel",
+              "needLevel",
+              "acquired",
+              "equip",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "skins": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "enchantLevel": {
+                "type": "integer"
+              },
+              "exceedLevel": {
+                "type": "integer"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slotPos": {
+                "type": "integer"
+              },
+              "slotPosName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "slotPos",
+              "slotPosName",
+              "id",
+              "name",
+              "grade",
+              "enchantLevel",
+              "exceedLevel",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "slots": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "enchantLevel": {
+                "type": "integer"
+              },
+              "exceedLevel": {
+                "type": "integer"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slotPos": {
+                "type": "integer"
+              },
+              "slotPosName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "slotPos",
+              "slotPosName",
+              "id",
+              "name",
+              "grade",
+              "enchantLevel",
+              "exceedLevel",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "wing": {
+          "additionalProperties": false,
+          "properties": {
+            "enchantLevel": {
+              "type": "integer"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "grade",
+            "enchantLevel",
+            "icon"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "wingSkin": {
+          "additionalProperties": false,
+          "properties": {
+            "enchantLevel": {
+              "type": "integer"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "grade",
+            "enchantLevel",
+            "icon"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        }
+      },
+      "required": [
+        "region",
+        "ref",
+        "slots",
+        "skins",
+        "pet",
+        "wing",
+        "wingSkin",
+        "skills"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -290,7 +1656,331 @@
       ],
       "type": "object"
     },
-    "name": "get_equipped_item"
+    "name": "get_equipped_item",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "categoryName": {
+          "type": "string"
+        },
+        "classNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "costumes": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "enchantLevel": {
+          "type": "integer"
+        },
+        "equipLevel": {
+          "type": "integer"
+        },
+        "godStoneSlotCount": {
+          "type": "integer"
+        },
+        "godStoneStat": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "desc": {
+                "type": "string"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slotPos": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "slotPos",
+              "name",
+              "desc",
+              "grade",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "grade": {
+          "type": "string"
+        },
+        "gradeName": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "magicStoneSlotCount": {
+          "type": "integer"
+        },
+        "magicStoneStat": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "grade": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slotPos": {
+                "type": "integer"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "slotPos",
+              "id",
+              "name",
+              "value",
+              "grade",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "mainStats": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "exceed": {
+                "type": "boolean"
+              },
+              "extra": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "minValue": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value",
+              "minValue",
+              "extra",
+              "exceed"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "maxEnchantLevel": {
+          "type": "integer"
+        },
+        "maxExceedEnchantLevel": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "raceName": {
+          "type": "string"
+        },
+        "ref": {
+          "additionalProperties": false,
+          "properties": {
+            "characterId": {
+              "type": "string"
+            },
+            "serverId": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "serverId",
+            "characterId"
+          ],
+          "type": "object"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "slotPos": {
+          "type": "integer"
+        },
+        "soulBindRate": {
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "subSkills": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "icon": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "level": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "level",
+              "icon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "subStats": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "exceed": {
+                "type": "boolean"
+              },
+              "extra": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "minValue": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value",
+              "minValue",
+              "extra",
+              "exceed"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "tradable": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "region",
+        "ref",
+        "slotPos",
+        "id",
+        "name",
+        "grade",
+        "gradeName",
+        "categoryName",
+        "type",
+        "icon",
+        "level",
+        "equipLevel",
+        "enchantLevel",
+        "maxEnchantLevel",
+        "maxExceedEnchantLevel",
+        "raceName",
+        "classNames",
+        "tradable",
+        "soulBindRate",
+        "mainStats",
+        "subStats",
+        "subSkills",
+        "magicStoneSlotCount",
+        "magicStoneStat",
+        "godStoneSlotCount",
+        "godStoneStat",
+        "costumes",
+        "sources"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -340,7 +2030,201 @@
       ],
       "type": "object"
     },
-    "name": "get_item"
+    "name": "get_item",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "categoryName": {
+          "type": "string"
+        },
+        "classNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "costumes": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "equipLevel": {
+          "type": "integer"
+        },
+        "godStoneSlotCount": {
+          "type": "integer"
+        },
+        "grade": {
+          "type": "string"
+        },
+        "gradeName": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "magicStoneSlotCount": {
+          "type": "integer"
+        },
+        "mainStats": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "exceed": {
+                "type": "boolean"
+              },
+              "extra": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "minValue": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value",
+              "minValue",
+              "extra",
+              "exceed"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "maxEnchantLevel": {
+          "type": "integer"
+        },
+        "maxExceedEnchantLevel": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "raceName": {
+          "type": "string"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "subStatCount": {
+          "type": "integer"
+        },
+        "subStats": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "exceed": {
+                "type": "boolean"
+              },
+              "extra": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "minValue": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value",
+              "minValue",
+              "extra",
+              "exceed"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "tradable": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "region",
+        "id",
+        "name",
+        "grade",
+        "gradeName",
+        "categoryName",
+        "type",
+        "icon",
+        "level",
+        "equipLevel",
+        "maxEnchantLevel",
+        "maxExceedEnchantLevel",
+        "raceName",
+        "classNames",
+        "tradable",
+        "mainStats",
+        "subStats",
+        "subStatCount",
+        "magicStoneSlotCount",
+        "godStoneSlotCount",
+        "costumes",
+        "sources"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -412,7 +2296,117 @@
       ],
       "type": "object"
     },
-    "name": "get_post"
+    "name": "get_post",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "author": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "ref": {
+              "additionalProperties": false,
+              "properties": {
+                "characterId": {
+                  "type": "string"
+                },
+                "serverId": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serverId",
+                "characterId"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "name",
+            "ref"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "board": {
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "enum": [
+            "notice",
+            "update",
+            "cm_story",
+            "free",
+            "member_recruit",
+            "tip",
+            "image"
+          ],
+          "type": "string"
+        },
+        "comments": {
+          "type": "integer"
+        },
+        "html": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "official": {
+          "type": "boolean"
+        },
+        "postedAt": {
+          "type": "string"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "thumbnailUrl": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "views": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "board",
+        "region",
+        "title",
+        "summary",
+        "thumbnailUrl",
+        "official",
+        "views",
+        "comments",
+        "postedAt",
+        "updatedAt"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -483,7 +2477,145 @@
       ],
       "type": "object"
     },
-    "name": "get_rankings"
+    "name": "get_rankings",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "characterName": {
+                "type": "string"
+              },
+              "classId": {
+                "type": "integer"
+              },
+              "className": {
+                "type": "string"
+              },
+              "gradeName": {
+                "type": "string"
+              },
+              "guildName": {
+                "type": "string"
+              },
+              "isNew": {
+                "type": "boolean"
+              },
+              "point": {
+                "type": "number"
+              },
+              "prevRank": {
+                "type": "integer"
+              },
+              "raceId": {
+                "type": "integer"
+              },
+              "rank": {
+                "type": "integer"
+              },
+              "rankChange": {
+                "type": "integer"
+              },
+              "ref": {
+                "additionalProperties": false,
+                "properties": {
+                  "characterId": {
+                    "type": "string"
+                  },
+                  "serverId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "serverId",
+                  "characterId"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "ref",
+              "rank",
+              "prevRank",
+              "rankChange",
+              "isNew",
+              "characterName",
+              "classId",
+              "className",
+              "raceId",
+              "guildName",
+              "point",
+              "gradeName"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "season": {
+          "additionalProperties": false,
+          "properties": {
+            "endDate": {
+              "type": "string"
+            },
+            "groupName": {
+              "type": "string"
+            },
+            "prevSeasonNo": {
+              "type": "integer"
+            },
+            "rankingContentsType": {
+              "type": "integer"
+            },
+            "seasonNo": {
+              "type": "integer"
+            },
+            "startDate": {
+              "type": "string"
+            },
+            "state": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "rankingContentsType",
+            "state",
+            "groupName",
+            "seasonNo",
+            "prevSeasonNo",
+            "startDate",
+            "endDate"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        }
+      },
+      "required": [
+        "region",
+        "season",
+        "entries"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -533,7 +2665,208 @@
       ],
       "type": "object"
     },
-    "name": "get_style"
+    "name": "get_style",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "author": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "ref": {
+              "additionalProperties": false,
+              "properties": {
+                "characterId": {
+                  "type": "string"
+                },
+                "serverId": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serverId",
+                "characterId"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "name",
+            "ref"
+          ],
+          "type": "object"
+        },
+        "comments": {
+          "type": "integer"
+        },
+        "downloads": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "images": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "outfit": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "itemGrade": {
+                "type": "string"
+              },
+              "itemIcon": {
+                "type": "string"
+              },
+              "itemName": {
+                "type": "string"
+              },
+              "skinGrade": {
+                "type": "string"
+              },
+              "skinIcon": {
+                "type": "string"
+              },
+              "skinName": {
+                "type": "string"
+              },
+              "slot": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "slot",
+              "itemName",
+              "itemGrade",
+              "itemIcon",
+              "skinName",
+              "skinGrade",
+              "skinIcon"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "pet": {
+          "additionalProperties": false,
+          "properties": {
+            "itemGrade": {
+              "type": "string"
+            },
+            "itemIcon": {
+              "type": "string"
+            },
+            "itemName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "itemName",
+            "itemGrade",
+            "itemIcon"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        },
+        "postedAt": {
+          "type": "string"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "views": {
+          "type": "integer"
+        },
+        "wing": {
+          "additionalProperties": false,
+          "properties": {
+            "itemGrade": {
+              "type": "string"
+            },
+            "itemIcon": {
+              "type": "string"
+            },
+            "itemName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "itemName",
+            "itemGrade",
+            "itemIcon"
+          ],
+          "type": [
+            "null",
+            "object"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "region",
+        "title",
+        "summary",
+        "author",
+        "images",
+        "views",
+        "likes",
+        "downloads",
+        "comments",
+        "postedAt",
+        "updatedAt",
+        "text",
+        "tags",
+        "outfit"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -576,7 +2909,45 @@
       },
       "type": "object"
     },
-    "name": "list_classes"
+    "name": "list_classes",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "text"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -646,7 +3017,92 @@
       ],
       "type": "object"
     },
-    "name": "list_comments"
+    "name": "list_comments",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "deleted": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "official": {
+                "type": "boolean"
+              },
+              "parentId": {
+                "type": "string"
+              },
+              "postId": {
+                "type": "string"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "postId",
+              "text",
+              "deleted",
+              "postedAt",
+              "official"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -689,7 +3145,42 @@
       },
       "type": "object"
     },
-    "name": "list_item_categories"
+    "name": "list_item_categories",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "properties": {
+              "child": {
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -732,7 +3223,41 @@
       },
       "type": "object"
     },
-    "name": "list_item_grades"
+    "name": "list_item_grades",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -791,7 +3316,132 @@
       ],
       "type": "object"
     },
-    "name": "list_pinned_posts"
+    "name": "list_pinned_posts",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "board": {
+                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+                "enum": [
+                  "notice",
+                  "update",
+                  "cm_story",
+                  "free",
+                  "member_recruit",
+                  "tip",
+                  "image"
+                ],
+                "type": "string"
+              },
+              "comments": {
+                "type": "integer"
+              },
+              "html": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "official": {
+                "type": "boolean"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "thumbnailUrl": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "views": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "board",
+              "region",
+              "title",
+              "summary",
+              "thumbnailUrl",
+              "official",
+              "views",
+              "comments",
+              "postedAt",
+              "updatedAt"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -856,7 +3506,132 @@
       ],
       "type": "object"
     },
-    "name": "list_posts"
+    "name": "list_posts",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "board": {
+                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+                "enum": [
+                  "notice",
+                  "update",
+                  "cm_story",
+                  "free",
+                  "member_recruit",
+                  "tip",
+                  "image"
+                ],
+                "type": "string"
+              },
+              "comments": {
+                "type": "integer"
+              },
+              "html": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "official": {
+                "type": "boolean"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "thumbnailUrl": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "views": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "board",
+              "region",
+              "title",
+              "summary",
+              "thumbnailUrl",
+              "official",
+              "views",
+              "comments",
+              "postedAt",
+              "updatedAt"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -870,7 +3645,50 @@
       "additionalProperties": false,
       "type": "object"
     },
-    "name": "list_regions"
+    "name": "list_regions",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "default": {
+                "type": "boolean"
+              },
+              "features": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "region": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "features",
+              "region"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -913,7 +3731,63 @@
       },
       "type": "object"
     },
-    "name": "list_servers"
+    "name": "list_servers",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "raceId": {
+                "type": "integer"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "serverId": {
+                "type": "integer"
+              },
+              "serverName": {
+                "type": "string"
+              },
+              "serverShortName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "region",
+              "serverId",
+              "raceId",
+              "serverName",
+              "serverShortName"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -969,7 +3843,92 @@
       ],
       "type": "object"
     },
-    "name": "list_style_comments"
+    "name": "list_style_comments",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "deleted": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "official": {
+                "type": "boolean"
+              },
+              "parentId": {
+                "type": "string"
+              },
+              "postId": {
+                "type": "string"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "postId",
+              "text",
+              "deleted",
+              "postedAt",
+              "official"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -1048,7 +4007,105 @@
       ],
       "type": "object"
     },
-    "name": "search_characters"
+    "name": "search_characters",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "classId": {
+                "type": "integer"
+              },
+              "className": {
+                "type": "string"
+              },
+              "imageUrl": {
+                "type": "string"
+              },
+              "level": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "race": {
+                "type": "integer"
+              },
+              "ref": {
+                "additionalProperties": false,
+                "properties": {
+                  "characterId": {
+                    "type": "string"
+                  },
+                  "serverId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "serverId",
+                  "characterId"
+                ],
+                "type": "object"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "serverName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "region",
+              "name",
+              "serverName",
+              "classId",
+              "className",
+              "race",
+              "level",
+              "imageUrl"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "lastPage": {
+          "type": "integer"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "page",
+        "size",
+        "total",
+        "lastPage",
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -1122,7 +4179,97 @@
       },
       "type": "object"
     },
-    "name": "search_items"
+    "name": "search_items",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "categoryName": {
+                "type": "string"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "image": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "options": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "tradable": {
+                "type": [
+                  "null",
+                  "boolean"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "region",
+              "name",
+              "grade",
+              "image",
+              "categoryName",
+              "options",
+              "tradable"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "lastPage": {
+          "type": "integer"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "page",
+        "size",
+        "total",
+        "lastPage",
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -1196,7 +4343,136 @@
       },
       "type": "object"
     },
-    "name": "search_styles"
+    "name": "search_styles",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": "object"
+              },
+              "comments": {
+                "type": "integer"
+              },
+              "downloads": {
+                "type": "integer"
+              },
+              "id": {
+                "type": "string"
+              },
+              "images": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "likes": {
+                "type": "integer"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "views": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "region",
+              "title",
+              "summary",
+              "author",
+              "images",
+              "views",
+              "likes",
+              "downloads",
+              "comments",
+              "postedAt",
+              "updatedAt"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "lastPage": {
+          "type": "integer"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "page",
+        "size",
+        "total",
+        "lastPage",
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -1246,7 +4522,28 @@
       ],
       "type": "object"
     },
-    "name": "suggest_items"
+    "name": "suggest_items",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   },
   {
     "annotations": {
@@ -1316,6 +4613,122 @@
       },
       "type": "object"
     },
-    "name": "top_styles"
+    "name": "top_styles",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "characterId": {
+                        "type": "string"
+                      },
+                      "serverId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "serverId",
+                      "characterId"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "name",
+                  "ref"
+                ],
+                "type": "object"
+              },
+              "comments": {
+                "type": "integer"
+              },
+              "downloads": {
+                "type": "integer"
+              },
+              "id": {
+                "type": "string"
+              },
+              "images": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "likes": {
+                "type": "integer"
+              },
+              "postedAt": {
+                "type": "string"
+              },
+              "region": {
+                "description": "the region, empty is the server's default",
+                "enum": [
+                  "kr",
+                  "tw",
+                  "nae",
+                  "naw",
+                  "eu",
+                  "sa",
+                  "asia"
+                ],
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "views": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "region",
+              "title",
+              "summary",
+              "author",
+              "images",
+              "views",
+              "likes",
+              "downloads",
+              "comments",
+              "postedAt",
+              "updatedAt"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
   }
 ]

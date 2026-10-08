@@ -11,7 +11,7 @@ import (
 
 func gameTools(s *mcp.Server, cs *clients) {
 	mcp.AddTool(s, tool("list_regions", "The regions this server reaches and the features each one has"),
-		func(context.Context, *mcp.CallToolRequest, struct{}) (*mcp.CallToolResult, any, error) {
+		func(context.Context, *mcp.CallToolRequest, struct{}) (*mcp.CallToolResult, list[regionInfo], error) {
 			regions, err := listRegions(cs)
 			return nil, regions, err
 		})
