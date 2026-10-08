@@ -52,7 +52,7 @@ type postText struct {
 func listPosts(ctx context.Context, c aion2.Aion2Client, args postsArgs) (list[aion2.Post], error) {
 	var (
 		out list[aion2.Post]
-		n   = args.Limit.or(20)
+		n   = args.Limit.or(defaultLimit)
 	)
 	for post, err := range c.Posts(ctx, args.Board) {
 		if err != nil {

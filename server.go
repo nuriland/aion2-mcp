@@ -96,6 +96,8 @@ func explain(err error) error {
 	return fmt.Errorf("%w. %s", err, hint)
 }
 
+const defaultLimit = 20 // rows a list answers with when none were asked for
+
 type list[T any] struct {
 	Items     []T  `json:"items"`
 	Truncated bool `json:"truncated,omitempty"` // more were there than the limit let through
@@ -115,7 +117,7 @@ func pageOf[T any](p *aion2.Paged[T]) page[T] {
 }
 
 func truncate[T any](items []T, limit listLimit) list[T] {
-	if n := limit.or(20); len(items) > n {
+	if n := limit.or(defaultLimit); len(items) > n {
 		return list[T]{Items: items[:n], Truncated: true}
 	}
 	return list[T]{Items: items}
