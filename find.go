@@ -30,7 +30,7 @@ const (
 	maxPages      = 5   // per race
 )
 
-func findCharacter(ctx context.Context, c aion2.Aion2Client, args findArgs) (*found, error) {
+func findCharacter(ctx context.Context, c *aion2.Client, args findArgs) (*found, error) {
 	var (
 		name   = strings.TrimSpace(args.Name)
 		search = aion2.CharacterSearch{Keyword: name, Size: searchSize}
@@ -112,7 +112,7 @@ func findCharacter(ctx context.Context, c aion2.Aion2Client, args findArgs) (*fo
 }
 
 // serverNamed matches a server by name, short name or id.
-func serverNamed(ctx context.Context, c aion2.Aion2Client, name string) (aion2.Server, error) {
+func serverNamed(ctx context.Context, c *aion2.Client, name string) (aion2.Server, error) {
 	servers, err := c.Servers(ctx)
 	if err != nil {
 		return aion2.Server{}, err

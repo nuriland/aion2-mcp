@@ -58,17 +58,17 @@ func listRegions(cs *clients) (list[regionInfo], error) {
 	return out, nil
 }
 
-func listServers(ctx context.Context, c aion2.Aion2Client, _ noArgs) (list[aion2.Server], error) {
+func listServers(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.Server], error) {
 	servers, err := c.Servers(ctx)
 	return list[aion2.Server]{Items: servers}, err
 }
 
-func listClasses(ctx context.Context, c aion2.Aion2Client, _ noArgs) (list[aion2.Class], error) {
+func listClasses(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.Class], error) {
 	classes, err := c.Classes(ctx)
 	return list[aion2.Class]{Items: classes}, err
 }
 
-func getRankings(ctx context.Context, c aion2.Aion2Client, args rankingArgs) (*aion2.RankingPage, error) {
+func getRankings(ctx context.Context, c *aion2.Client, args rankingArgs) (*aion2.RankingPage, error) {
 	contents, ok := rankingBoards[args.Contents]
 	if !ok {
 		return nil, fmt.Errorf("no ranking board %q", args.Contents)

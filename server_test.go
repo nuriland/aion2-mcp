@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"io"
 	"net/http"
@@ -27,6 +27,38 @@ const (
 	fixtures  = "testdata"      // NC as the SDK's own tests record it
 	geofenced = "outside-korea" // geofenced is a made-up characterId the fake NC answers with the 404 KR gives everyone outside Korea
 )
+
+var (
+	fake           = &nc{}
+	cs             *clients // the default region EU in German
+	eu, tw, kr, sa *aion2.Client
+	session        *mcp.ClientSession
+)
+
+func TestMain(m *testing.M) {
+	srv := httptest.NewServer(fake)
+	defer srv.Close()
+	to, _ := url.Parse(srv.URL)
+	cs = &clients{region: aion2.RegionEU, locale: aion2.LocaleDE, dial: dialer(1000, nil, redirect{to})}
+
+	var (
+		errs             [6]error
+		serverT, clientT = mcp.NewInMemoryTransports()
+		ctx              = context.Background()
+	)
+	eu, errs[0] = cs.get("", "")
+	tw, errs[1] = cs.get(aion2.RegionTW, "")
+	kr, errs[2] = cs.get(aion2.RegionKR, "")
+	sa, errs[3] = cs.get(aion2.RegionSA, "")
+	_, errs[4] = newServer(cs).Connect(ctx, serverT, nil)
+	session, errs[5] = mcp.NewClient(&mcp.Implementation{Name: "test", Version: "0"}, nil).Connect(ctx, clientT, nil)
+	if err := errors.Join(errs[:]...); err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	m.Run()
+}
 
 // fixtureFor routes the requests these tests make to the SDK's fixtures, by path, whichever NC host they were for
 //
@@ -69,6 +101,8 @@ func fixtureFor(p string, q url.Values) string {
 		return "comments.json"
 	case strings.HasSuffix(p, "/moreComment") && q.Get("previousCommentId") == "6ab3db1a2de5bf50367f7f09":
 		return "comments_page2.json"
+	case strings.HasSuffix(p, "/tags"):
+		return "style_tags.json"
 	case strings.HasPrefix(p, "/styleshop/board/"):
 		return "style.json"
 	case strings.HasPrefix(p, "/styleshop/") && q.Get("page") == "1":
@@ -117,37 +151,17 @@ func (n *nc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath.Join(fixtures, name))
 }
 
-func (n *nc) seen(suffix string) []*url.URL {
+func (n *nc) last(suffix string) (url.Values, int) {
 	n.mu.Lock()
 	defer n.mu.Unlock()
 
-	var out []*url.URL
+	q, seen := url.Values{}, 0
 	for _, u := range n.requests {
 		if strings.HasSuffix(u.Path, suffix) {
-			out = append(out, u)
+			q, seen = u.Query(), seen+1
 		}
 	}
-	return out
-}
-
-func (n *nc) sent(t *testing.T, suffix string) url.Values {
-	t.Helper()
-
-	seen := n.seen(suffix)
-	if len(seen) == 0 {
-		t.Fatalf("nothing reached %s", suffix)
-	}
-	return seen[len(seen)-1].Query()
-}
-
-func wants(t *testing.T, q url.Values, want map[string]string) {
-	t.Helper()
-
-	for k, v := range want {
-		if got := q.Get(k); got != v {
-			t.Errorf("%s = %q, want %q", k, got, v)
-		}
-	}
+	return q, seen
 }
 
 // redirect sends every request to one test server, keeping its path and query
@@ -159,105 +173,39 @@ func (r redirect) RoundTrip(req *http.Request) (*http.Response, error) {
 	return http.DefaultTransport.RoundTrip(req)
 }
 
-type harness struct {
-	nc      *nc
-	clients *clients
-	session *mcp.ClientSession
-}
-
-// start serves the tools over an in-memory transport, the default region EU in German
-func start(t *testing.T) *harness {
-	t.Helper()
-
-	var (
-		h   = &harness{nc: &nc{}}
-		srv = httptest.NewServer(h.nc)
-	)
-	t.Cleanup(srv.Close)
-	to, _ := url.Parse(srv.URL)
-
-	h.clients = &clients{region: aion2.RegionEU, locale: aion2.LocaleDE, dial: dialer(1000, nil, redirect{to})}
-
-	serverT, clientT := mcp.NewInMemoryTransports()
-	ctx := context.Background()
-	if _, err := newServer(h.clients).Connect(ctx, serverT, nil); err != nil {
-		t.Fatal(err)
-	}
-	session, err := mcp.NewClient(&mcp.Implementation{Name: "test", Version: "0"}, nil).Connect(ctx, clientT, nil)
+func TestGolden(t *testing.T) {
+	res, err := session.ListTools(t.Context(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { session.Close() })
-	h.session = session
-	return h
-}
-
-func (h *harness) call(t *testing.T, name string, args map[string]any) *mcp.CallToolResult {
-	t.Helper()
-
-	res, err := h.session.CallTool(context.Background(), &mcp.CallToolParams{Name: name, Arguments: args})
-	if err != nil {
-		t.Fatalf("%s: %v", name, err)
-	}
-	return res
-}
-
-func text(res *mcp.CallToolResult) string {
-	return res.Content[0].(*mcp.TextContent).Text
-}
-
-func structured[T any](t *testing.T, res *mcp.CallToolResult) T {
-	t.Helper()
-
-	if res.IsError {
-		t.Fatalf("tool error: %s", text(res))
-	}
-	raw, err := json.Marshal(res.StructuredContent)
+	tools, err := json.MarshalIndent(res.Tools, "", "  ")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var out T
-	if err := json.Unmarshal(raw, &out); err != nil {
-		t.Fatalf("%s: %v", raw, err)
+	notes, err := os.ReadFile(filepath.Join("testdata", "patchnotes.html"))
+	if err != nil {
+		t.Fatal(err)
 	}
-	return out
-}
 
-// golden compares got to testdata/name, or rewrites the file under -update
-func golden(t *testing.T, name string, got []byte) {
-	t.Helper()
-
-	path := filepath.Join("testdata", name)
-	if *update {
-		if err := os.WriteFile(path, got, 0o644); err != nil {
-			t.Fatal(err)
+	for name, got := range map[string]string{"tools.json": string(tools) + "\n", "patchnotes.txt": htmlText(string(notes)) + "\n"} {
+		path := filepath.Join("testdata", name)
+		if *update {
+			if err := os.WriteFile(path, []byte(got), 0o644); err != nil {
+				t.Fatal(err)
+			}
+			continue
 		}
-		return
+		want, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatalf("%v, run go test . -update", err)
+		}
+		if strings.ReplaceAll(string(want), "\r\n", "\n") != got {
+			t.Errorf("%s changed, if that was meant, run go test . -update and review the diff", path)
+		}
 	}
-	want, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("%v; run go test . -update", err)
-	}
-	if !bytes.Equal(bytes.ReplaceAll(want, []byte("\r\n"), []byte("\n")), got) {
-		t.Errorf("%s changed; if that was meant, run go test . -update and review the diff", path)
-	}
-}
-
-func TestToolSchemas(t *testing.T) {
-	h := start(t)
-	res, err := h.session.ListTools(context.Background(), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	got, err := json.MarshalIndent(res.Tools, "", "  ")
-	if err != nil {
-		t.Fatal(err)
-	}
-	golden(t, "tools.json", append(got, '\n'))
 }
 
 func TestDefaultLocaleStaysOnDefaultRegion(t *testing.T) {
-	h := start(t)
 	for _, c := range []struct {
 		region aion2.Region
 		locale aion2.Locale
@@ -268,7 +216,7 @@ func TestDefaultLocaleStaysOnDefaultRegion(t *testing.T) {
 		{aion2.RegionTW, "", aion2.LocaleZHTW},
 		{aion2.RegionNAW, aion2.LocaleJA, aion2.LocaleJA},
 	} {
-		client, err := h.clients.get(c.region, c.locale)
+		client, err := cs.get(c.region, c.locale)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -296,7 +244,7 @@ func TestRateIsPerRegion(t *testing.T) {
 
 	began := time.Now()
 	var wg sync.WaitGroup
-	for _, c := range []aion2.Aion2Client{en, de, en, de} {
+	for _, c := range []*aion2.Client{en, de, en, de} {
 		wg.Go(func() { c.Servers(context.Background()) })
 	}
 	wg.Wait()
@@ -306,12 +254,13 @@ func TestRateIsPerRegion(t *testing.T) {
 }
 
 func TestErrorsCarryAHint(t *testing.T) {
-	h := start(t)
-	res := h.call(t, "get_character", map[string]any{"serverId": 1001, "characterId": geofenced, "region": "kr"})
-	if !res.IsError {
-		t.Fatal("want a tool error")
+	res, err := session.CallTool(t.Context(), &mcp.CallToolParams{
+		Name: "get_character", Arguments: map[string]any{"serverId": 1001, "characterId": geofenced, "region": "kr"},
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
-	if msg := text(res); !strings.Contains(msg, "does not serve this route") || !strings.Contains(msg, "outside Korea") {
-		t.Errorf("error text: %s", msg)
+	if msg := res.Content[0].(*mcp.TextContent).Text; !res.IsError || !strings.Contains(msg, "does not serve this route") || !strings.Contains(msg, "outside Korea") {
+		t.Errorf("error %v: %s", res.IsError, msg)
 	}
 }

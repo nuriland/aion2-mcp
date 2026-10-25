@@ -56,7 +56,7 @@ type daevanionArgs struct {
 	BoardID int `json:"boardId" jsonschema:"a daevanion id from get_character"`
 }
 
-func searchCharacters(ctx context.Context, c aion2.Aion2Client, args searchCharactersArgs) (page[aion2.CharacterSummary], error) {
+func searchCharacters(ctx context.Context, c *aion2.Client, args searchCharactersArgs) (page[aion2.CharacterSummary], error) {
 	p, err := c.SearchCharacters(ctx, aion2.CharacterSearch{
 		Keyword:  args.Keyword,
 		RaceID:   args.RaceID,
@@ -71,18 +71,18 @@ func searchCharacters(ctx context.Context, c aion2.Aion2Client, args searchChara
 	return pageOf(p), nil
 }
 
-func getCharacter(ctx context.Context, c aion2.Aion2Client, args characterArgs) (*aion2.Character, error) {
+func getCharacter(ctx context.Context, c *aion2.Client, args characterArgs) (*aion2.Character, error) {
 	return c.Character(ctx, args.ref())
 }
 
-func getEquipment(ctx context.Context, c aion2.Aion2Client, args characterArgs) (*aion2.Equipment, error) {
+func getEquipment(ctx context.Context, c *aion2.Client, args characterArgs) (*aion2.Equipment, error) {
 	return c.Equipment(ctx, args.ref())
 }
 
-func getEquippedItem(ctx context.Context, c aion2.Aion2Client, args equippedItemArgs) (*aion2.EquippedItem, error) {
+func getEquippedItem(ctx context.Context, c *aion2.Client, args equippedItemArgs) (*aion2.EquippedItem, error) {
 	return c.EquippedItem(ctx, args.ref(), aion2.EquipSlot{ItemID: args.ItemID, SlotPos: args.SlotPos, EnchantLevel: args.EnchantLevel})
 }
 
-func getDaevanion(ctx context.Context, c aion2.Aion2Client, args daevanionArgs) (*aion2.DaevanionBoard, error) {
+func getDaevanion(ctx context.Context, c *aion2.Client, args daevanionArgs) (*aion2.DaevanionBoard, error) {
 	return c.Daevanion(ctx, args.ref(), args.BoardID)
 }

@@ -49,7 +49,7 @@ type postText struct {
 }
 
 // listPosts stops paging the board once it has the limit
-func listPosts(ctx context.Context, c aion2.Aion2Client, args postsArgs) (list[aion2.Post], error) {
+func listPosts(ctx context.Context, c *aion2.Client, args postsArgs) (list[aion2.Post], error) {
 	var (
 		out list[aion2.Post]
 		n   = args.Limit.or(defaultLimit)
@@ -68,13 +68,13 @@ func listPosts(ctx context.Context, c aion2.Aion2Client, args postsArgs) (list[a
 	return out, nil
 }
 
-func listPinnedPosts(ctx context.Context, c aion2.Aion2Client, args boardArgs) (list[aion2.Post], error) {
+func listPinnedPosts(ctx context.Context, c *aion2.Client, args boardArgs) (list[aion2.Post], error) {
 	posts, err := c.PinnedPosts(ctx, args.Board)
 	return list[aion2.Post]{Items: posts}, err
 }
 
 // getPost flattens the body to text unless html was asked for
-func getPost(ctx context.Context, c aion2.Aion2Client, args postArgs) (*postText, error) {
+func getPost(ctx context.Context, c *aion2.Client, args postArgs) (*postText, error) {
 	post, err := c.Post(ctx, args.Board, args.ID)
 	if err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func getPost(ctx context.Context, c aion2.Aion2Client, args postArgs) (*postText
 	return out, nil
 }
 
-func listComments(ctx context.Context, c aion2.Aion2Client, args commentsArgs) (list[aion2.Comment], error) {
+func listComments(ctx context.Context, c *aion2.Client, args commentsArgs) (list[aion2.Comment], error) {
 	comments, err := c.Comments(ctx, args.Board, args.PostID)
 	return truncate(comments, args.Limit), err
 }

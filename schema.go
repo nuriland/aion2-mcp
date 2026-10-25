@@ -23,7 +23,7 @@ type (
 	gender      string // the styleshop's MALE or FEMALE
 	styleSort   string // downloads or likes
 	stylePeriod string // day_2, day_7, day_30, day_100, all
-	styleField  string // name, item, tag
+	styleField  string // title, name or item
 )
 
 // or is the limit, or n when none was asked for
@@ -62,7 +62,7 @@ var rankingBoards = map[rankingBoard]aion2.RankingContents{
 var schemas = map[reflect.Type]*jsonschema.Schema{
 	reflect.TypeFor[aion2.Region](): enum("the region, empty is the server's default", regions...),
 	reflect.TypeFor[aion2.Locale](): enum("the labels' language, empty is the region's own. Global takes en, de, es, fr, ja and pt-BR", locales...),
-	reflect.TypeFor[aion2.Board]():  enum("notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'", boards...),
+	reflect.TypeFor[aion2.Board]():  enum("notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'", boards...),
 
 	reflect.TypeFor[pageNumber](): count(0),
 	reflect.TypeFor[pageSize]():   count(200),
@@ -75,7 +75,7 @@ var schemas = map[reflect.Type]*jsonschema.Schema{
 	reflect.TypeFor[gender]():      enum("", "MALE", "FEMALE"),
 	reflect.TypeFor[styleSort]():   enum("", "DOWNLOADS", "LIKES"),
 	reflect.TypeFor[stylePeriod](): enum("", "DAY_2", "DAY_7", "DAY_30", "DAY_100", "ALL"),
-	reflect.TypeFor[styleField]():  enum("", "name", "item", "tag"),
+	reflect.TypeFor[styleField]():  enum("", "title", "name", "item"),
 
 	// A tree, which jsonschema-go cannot follow, so the children stay an array of anything
 	reflect.TypeFor[aion2.ItemCategory](): {Type: "object", Properties: map[string]*jsonschema.Schema{

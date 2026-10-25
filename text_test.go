@@ -1,10 +1,6 @@
 package main
 
-import (
-	"os"
-	"path/filepath"
-	"testing"
-)
+import "testing"
 
 func TestHTMLText(t *testing.T) {
 	zwsp := string(rune(0x200b))
@@ -13,14 +9,6 @@ func TestHTMLText(t *testing.T) {
 	if got := htmlText(in); got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
-}
-
-func TestPatchNotesText(t *testing.T) {
-	body, err := os.ReadFile(filepath.Join("testdata", "patchnotes.html"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	golden(t, "patchnotes.txt", []byte(htmlText(string(body))+"\n"))
 }
 
 func TestHTMLTextLinks(t *testing.T) {

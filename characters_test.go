@@ -1,37 +1,37 @@
 package main
 
-import (
-	"testing"
-
-	aion2 "github.com/nuriland/aion2-api"
-)
+import "testing"
 
 func TestCharacterTools(t *testing.T) {
-	h := start(t)
-	ref := map[string]any{"serverId": 1001, "characterId": "abc="}
+	ctx := t.Context()
+	ref := characterArgs{ServerID: 1001, CharacterID: "abc="}
 
-	ch := structured[aion2.Character](t, h.call(t, "get_character", ref))
-	if ch.Profile.Name != "Alpha" || len(ch.Stats) == 0 {
-		t.Errorf("character: %+v", ch.Profile)
+	ch, err := getCharacter(ctx, eu, ref)
+	if err != nil {
+		t.Fatal(err)
 	}
-	wants(t, h.nc.sent(t, "/character/info"), map[string]string{"serverId": "1001", "characterId": "abc="})
-
-	eq := structured[aion2.Equipment](t, h.call(t, "get_equipment", ref))
-	if len(eq.Slots) == 0 {
-		t.Error("equipment has no slots")
+	if q, _ := fake.last("/character/info"); ch.Profile.Name != "Alpha" || len(ch.Stats) == 0 || q.Get("serverId") != "1001" || q.Get("characterId") != "abc=" {
+		t.Errorf("character %+v, sent %v", ch.Profile, q)
 	}
 
-	item := structured[aion2.EquippedItem](t, h.call(t, "get_equipped_item", map[string]any{
-		"serverId": 1001, "characterId": "abc=", "itemId": 110720001, "slotPos": 1, "enchantLevel": 20,
-	}))
-	if item.Name == "" || item.SlotPos != 1 {
-		t.Errorf("equipped item: %q in slot %d", item.Name, item.SlotPos)
+	if eq, err := getEquipment(ctx, eu, ref); err != nil || len(eq.Slots) == 0 {
+		t.Errorf("equipment: %v, %+v", err, eq)
 	}
-	wants(t, h.nc.sent(t, "/character/equipment/item"), map[string]string{"id": "110720001", "slotPos": "1", "enchantLevel": "20"})
 
-	board := structured[aion2.DaevanionBoard](t, h.call(t, "get_daevanion", map[string]any{"serverId": 1001, "characterId": "abc=", "boardId": 71}))
-	if board.BoardID != 71 || len(board.Nodes) == 0 {
-		t.Errorf("daevanion board %d, %d nodes", board.BoardID, len(board.Nodes))
+	item, err := getEquippedItem(ctx, eu, equippedItemArgs{characterArgs: ref, ItemID: 110720001, SlotPos: 1, EnchantLevel: 20})
+	if err != nil {
+		t.Fatal(err)
 	}
-	wants(t, h.nc.sent(t, "/character/daevanion/detail"), map[string]string{"boardId": "71"})
+	q, _ := fake.last("/character/equipment/item")
+	if item.Name == "" || item.SlotPos != 1 || q.Get("id") != "110720001" || q.Get("slotPos") != "1" || q.Get("enchantLevel") != "20" {
+		t.Errorf("equipped item %q in slot %d, sent %v", item.Name, item.SlotPos, q)
+	}
+
+	board, err := getDaevanion(ctx, eu, daevanionArgs{characterArgs: ref, BoardID: 71})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if q, _ := fake.last("/character/daevanion/detail"); board.BoardID != 71 || len(board.Nodes) == 0 || q.Get("boardId") != "71" {
+		t.Errorf("daevanion board %d, %d nodes, sent %v", board.BoardID, len(board.Nodes), q)
+	}
 }

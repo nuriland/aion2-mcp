@@ -106,12 +106,12 @@ func serveHTTP(ctx context.Context, addr string, server *mcp.Server) error {
 }
 
 // dialer makes SDK clients that share one rate limiter per region
-func dialer(perSecond float64, logger *slog.Logger, transport http.RoundTripper) func(aion2.Region, aion2.Locale) (aion2.Aion2Client, error) {
+func dialer(perSecond float64, logger *slog.Logger, transport http.RoundTripper) func(aion2.Region, aion2.Locale) (*aion2.Client, error) {
 	var (
 		mu       sync.Mutex
 		limiters = map[aion2.Region]*rate.Limiter{}
 	)
-	return func(region aion2.Region, locale aion2.Locale) (aion2.Aion2Client, error) {
+	return func(region aion2.Region, locale aion2.Locale) (*aion2.Client, error) {
 		mu.Lock()
 		limiter, ok := limiters[region]
 		if !ok {
@@ -146,14 +146,14 @@ func (t throttle) RoundTrip(req *http.Request) (*http.Response, error) {
 type clients struct {
 	region aion2.Region
 	locale aion2.Locale
-	dial   func(aion2.Region, aion2.Locale) (aion2.Aion2Client, error)
+	dial   func(aion2.Region, aion2.Locale) (*aion2.Client, error)
 
 	mu    sync.Mutex
-	cache map[scope]aion2.Aion2Client // one client per region and locale, made on first use
+	cache map[scope]*aion2.Client
 }
 
 // get resolves an empty region to the default one
-func (c *clients) get(region aion2.Region, locale aion2.Locale) (aion2.Aion2Client, error) {
+func (c *clients) get(region aion2.Region, locale aion2.Locale) (*aion2.Client, error) {
 	if region == "" {
 		region = c.region
 	}
@@ -173,7 +173,7 @@ func (c *clients) get(region aion2.Region, locale aion2.Locale) (aion2.Aion2Clie
 		return nil, err
 	}
 	if c.cache == nil {
-		c.cache = map[scope]aion2.Aion2Client{}
+		c.cache = map[scope]*aion2.Client{}
 	}
 	c.cache[key] = client
 	return client, nil

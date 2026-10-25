@@ -54,80 +54,77 @@ func searchPage(w http.ResponseWriter, q url.Values) {
 	})
 }
 
+// The fake NC is shared by every test, so each case counts the searches it made from where the last one left off
 func TestFindCharacterPages(t *testing.T) {
-	searchesFor := func(h *harness) int {
-		return len(h.nc.seen("/search/character")) + len(h.nc.seen("/search/v2/character"))
-	}
+	ctx := t.Context()
 
 	// Across servers a second "Deep" could sit on page 4, so every page of both races is read
-	h := start(t)
-	got := structured[found](t, h.call(t, "find_character", map[string]any{"name": "deep", "region": "tw"}))
-	if got.Character == nil || searchesFor(h) != 8 {
-		t.Errorf("deep on every server: %d searches, %+v", searchesFor(h), got)
+	_, before := fake.last("/character")
+	got, err := findCharacter(ctx, tw, findArgs{Name: "deep"})
+	if _, n := fake.last("/character"); err != nil || got.Character == nil || n-before != 8 {
+		t.Errorf("deep on every server: %v, %d searches, %+v", err, n-before, got)
 	}
 
 	// On one server the first match is the only one
-	h = start(t)
-	got = structured[found](t, h.call(t, "find_character", map[string]any{"name": "deep", "server": "1001", "region": "tw"}))
-	if got.Character == nil || searchesFor(h) != 3 {
-		t.Errorf("deep on one server: %d searches, %+v", searchesFor(h), got)
+	_, before = fake.last("/character")
+	got, err = findCharacter(ctx, tw, findArgs{Name: "deep", Server: "1001"})
+	if _, n := fake.last("/character"); err != nil || got.Character == nil || n-before != 3 {
+		t.Errorf("deep on one server: %v, %d searches, %+v", err, n-before, got)
 	}
 
-	h = start(t)
-	got = structured[found](t, h.call(t, "find_character", map[string]any{"name": "many", "region": "tw"}))
-	if got.Character != nil || len(got.Candidates) != maxCandidates || !strings.Contains(got.Note, "there are more") || searchesFor(h) != 2*maxPages {
-		t.Errorf("many: %d searches, %d candidates, note %q", searchesFor(h), len(got.Candidates), got.Note)
+	_, before = fake.last("/character")
+	got, err = findCharacter(ctx, tw, findArgs{Name: "many"})
+	if _, n := fake.last("/character"); err != nil || got.Character != nil || len(got.Candidates) != maxCandidates || !strings.Contains(got.Note, "there are more") || n-before != 2*maxPages {
+		t.Errorf("many: %v, %d searches, %+v", err, n-before, got)
 	}
 
 	// Global takes both races in one search
-	h = start(t)
-	structured[found](t, h.call(t, "find_character", map[string]any{"name": "many", "region": "sa"}))
-	global := h.nc.seen("/search/v2/character")
-	if len(global) != maxPages || global[0].Query().Has("race") {
-		t.Errorf("Global: %d searches, first %s", len(global), global[0].RawQuery)
+	_, before = fake.last("/search/v2/character")
+	_, err = findCharacter(ctx, sa, findArgs{Name: "many"})
+	if q, n := fake.last("/search/v2/character"); err != nil || n-before != maxPages || q.Has("race") {
+		t.Errorf("Global: %v, %d searches, last %v", err, n-before, q)
 	}
 }
 
 func TestFindCharacterMisses(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
 
-	got := structured[found](t, h.call(t, "find_character", map[string]any{"name": "nobody", "region": "tw"}))
-	if got.Character != nil || len(got.Candidates) != 0 || !strings.Contains(got.Note, "contains") {
-		t.Errorf("nobody: %+v", got)
+	got, err := findCharacter(ctx, tw, findArgs{Name: "nobody"})
+	if err != nil || got.Character != nil || len(got.Candidates) != 0 || !strings.Contains(got.Note, "contains") {
+		t.Errorf("nobody: %v, %+v", err, got)
 	}
 
-	got = structured[found](t, h.call(t, "find_character", map[string]any{"name": "naked", "region": "tw"}))
-	if got.Character == nil || got.Equipment != nil || !strings.Contains(got.Note, "equipment unavailable") {
-		t.Errorf("missing gear should keep the profile: %+v", got)
+	got, err = findCharacter(ctx, tw, findArgs{Name: "naked"})
+	if err != nil || got.Character == nil || got.Equipment != nil || !strings.Contains(got.Note, "equipment unavailable") {
+		t.Errorf("missing gear should keep the profile: %v, %+v", err, got)
 	}
 }
 
 func TestFindCharacter(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
 
-	got := structured[found](t, h.call(t, "find_character", map[string]any{"name": "  ALPHA ", "server": "시엘", "region": "tw"}))
-	if got.Character == nil || got.Character.Profile.Name != "Alpha" || got.Equipment == nil || len(got.Candidates) != 0 {
-		t.Errorf("exact match on a named server: %+v", got)
+	_, before := fake.last("/search/character")
+	got, err := findCharacter(ctx, tw, findArgs{Name: "  ALPHA ", Server: "시엘"})
+	if err != nil || got.Character == nil || got.Character.Profile.Name != "Alpha" || got.Equipment == nil || len(got.Candidates) != 0 {
+		t.Errorf("exact match on a named server: %v, %+v", err, got)
 	}
-	sent := h.nc.seen("/search/character")
-	if len(sent) != 1 || sent[0].Query().Get("serverId") != "1001" || sent[0].Query().Get("race") != "1" {
-		t.Errorf("a named server should mean one search, on its id and race: %v", sent)
+	if q, n := fake.last("/search/character"); n-before != 1 || q.Get("serverId") != "1001" || q.Get("race") != "1" {
+		t.Errorf("a named server should mean one search, on its id and race: %d searches, last %v", n-before, q)
 	}
 
 	// Without a server both races are searched
-	h = start(t)
-	got = structured[found](t, h.call(t, "find_character", map[string]any{"name": "beta", "region": "tw"}))
-	if got.Character == nil || len(h.nc.seen("/search/character")) != 2 {
-		t.Errorf("exact match across races: %+v", got)
+	_, before = fake.last("/search/character")
+	got, err = findCharacter(ctx, tw, findArgs{Name: "beta"})
+	if _, n := fake.last("/search/character"); err != nil || got.Character == nil || n-before != 2 {
+		t.Errorf("exact match across races: %v, %d searches, %+v", err, n-before, got)
 	}
 
-	got = structured[found](t, h.call(t, "find_character", map[string]any{"name": "a", "region": "tw"}))
-	if got.Character != nil || len(got.Candidates) != 2 || got.Note == "" {
-		t.Errorf("no exact match should list the near misses: %+v", got)
+	got, err = findCharacter(ctx, tw, findArgs{Name: "a"})
+	if err != nil || got.Character != nil || len(got.Candidates) != 2 || got.Note == "" {
+		t.Errorf("no exact match should list the near misses: %v, %+v", err, got)
 	}
 
-	res := h.call(t, "find_character", map[string]any{"name": "Alpha", "server": "Israphel", "region": "tw"})
-	if !res.IsError || !strings.Contains(text(res), "list_servers") {
-		t.Errorf("unknown server: %s", text(res))
+	if _, err := findCharacter(ctx, tw, findArgs{Name: "Alpha", Server: "Israphel"}); err == nil || !strings.Contains(err.Error(), "list_servers") {
+		t.Errorf("unknown server: %v", err)
 	}
 }

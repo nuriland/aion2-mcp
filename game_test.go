@@ -1,24 +1,25 @@
 package main
 
 import (
-	"strings"
+	"errors"
 	"testing"
 
 	aion2 "github.com/nuriland/aion2-api"
 )
 
 func TestRankings(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
 
-	board := structured[aion2.RankingPage](t, h.call(t, "get_rankings", map[string]any{"contents": "arena_cooperation", "serverId": 1001, "classId": 0}))
-	if board.Season == nil || len(board.Entries) == 0 {
-		t.Errorf("board: season %v, %d entries", board.Season, len(board.Entries))
+	board, err := getRankings(ctx, eu, rankingArgs{Contents: "arena_cooperation", ServerID: 1001})
+	if err != nil {
+		t.Fatal(err)
 	}
-	wants(t, h.nc.sent(t, "/ranking/list"), map[string]string{"rankingContentsType": "6", "serverId": "1001"})
+	if q, _ := fake.last("/ranking/list"); board.Season == nil || len(board.Entries) == 0 || q.Get("rankingContentsType") != "6" || q.Get("serverId") != "1001" {
+		t.Errorf("board: season %v, %d entries, sent %v", board.Season, len(board.Entries), q)
+	}
 
 	// What every board answers while NC has them off
-	res := h.call(t, "get_rankings", map[string]any{"contents": "abyss", "serverId": 2001})
-	if !res.IsError || !strings.Contains(text(res), "turned off") {
-		t.Errorf("no season: %s", text(res))
+	if _, err := getRankings(ctx, eu, rankingArgs{Contents: "abyss", ServerID: 2001}); !errors.Is(err, aion2.ErrNoSeason) {
+		t.Errorf("no season: %v", err)
 	}
 }

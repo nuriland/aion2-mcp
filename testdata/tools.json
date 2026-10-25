@@ -1989,7 +1989,7 @@
       "readOnlyHint": true,
       "title": "Get item"
     },
-    "description": "An item's definition at +0 (stats, roll ranges, slots, sources). Works in every region",
+    "description": "An item's definition at +0 (stats, roll ranges, slots, sources). KR and TW only, NC took it off Global",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -2238,14 +2238,14 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
           "enum": [
             "notice",
             "update",
             "cm_story",
             "free",
             "member_recruit",
-            "tip",
+            "qnanknowhow",
             "image"
           ],
           "type": "string"
@@ -2333,14 +2333,14 @@
           ]
         },
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
           "enum": [
             "notice",
             "update",
             "cm_story",
             "free",
             "member_recruit",
-            "tip",
+            "qnanknowhow",
             "image"
           ],
           "type": "string"
@@ -2961,14 +2961,14 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
           "enum": [
             "notice",
             "update",
             "cm_story",
             "free",
             "member_recruit",
-            "tip",
+            "qnanknowhow",
             "image"
           ],
           "type": "string"
@@ -3271,14 +3271,14 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
           "enum": [
             "notice",
             "update",
             "cm_story",
             "free",
             "member_recruit",
-            "tip",
+            "qnanknowhow",
             "image"
           ],
           "type": "string"
@@ -3357,14 +3357,14 @@
                 ]
               },
               "board": {
-                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
                 "enum": [
                   "notice",
                   "update",
                   "cm_story",
                   "free",
                   "member_recruit",
-                  "tip",
+                  "qnanknowhow",
                   "image"
                 ],
                 "type": "string"
@@ -3455,14 +3455,14 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
           "enum": [
             "notice",
             "update",
             "cm_story",
             "free",
             "member_recruit",
-            "tip",
+            "qnanknowhow",
             "image"
           ],
           "type": "string"
@@ -3547,14 +3547,14 @@
                 ]
               },
               "board": {
-                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, tip and image are the players'",
+                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
                 "enum": [
                   "notice",
                   "update",
                   "cm_story",
                   "free",
                   "member_recruit",
-                  "tip",
+                  "qnanknowhow",
                   "image"
                 ],
                 "type": "string"
@@ -3935,6 +3935,87 @@
       "idempotentHint": true,
       "openWorldHint": true,
       "readOnlyHint": true,
+      "title": "List style tags"
+    },
+    "description": "What search_styles filters on: the tags, then the classes, then the genders, with localized names",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "locale": {
+          "description": "the labels' language, empty is the region's own. Global takes en, de, es, fr, ja and pt-BR",
+          "enum": [
+            "ko",
+            "zh-TW",
+            "en",
+            "de",
+            "es",
+            "fr",
+            "ja",
+            "pt-BR"
+          ],
+          "type": "string"
+        },
+        "region": {
+          "description": "the region, empty is the server's default",
+          "enum": [
+            "kr",
+            "tw",
+            "nae",
+            "naw",
+            "eu",
+            "sa",
+            "asia"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "list_style_tags",
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "codeName": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "codeName",
+              "displayName"
+            ],
+            "type": "object"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": true,
+      "readOnlyHint": true,
       "title": "Search characters"
     },
     "description": "Search characters by name. Each hit's ref opens get_character, get_equipment and get_daevanion",
@@ -4114,7 +4195,7 @@
       "readOnlyHint": true,
       "title": "Search items"
     },
-    "description": "Search the item catalog. TW only. KR and Global have no catalog, though get_item works everywhere",
+    "description": "Search the item catalog. TW only, KR and Global have no catalog",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -4278,16 +4359,20 @@
       "readOnlyHint": true,
       "title": "Search styles"
     },
-    "description": "Search the styleshop's looks",
+    "description": "Search the styleshop's looks by a word, tags, class or gender",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
+        "class": {
+          "description": "a CLASS code from list_style_tags, like GLADIATOR",
+          "type": "string"
+        },
         "field": {
-          "description": "match the character's name, an item worn or a tag, empty is title and text",
+          "description": "where keyword matches: title (the default), name for the character's or item for a worn piece's",
           "enum": [
+            "title",
             "name",
-            "item",
-            "tag"
+            "item"
           ],
           "type": "string"
         },
@@ -4339,6 +4424,16 @@
           "maximum": 100,
           "minimum": 1,
           "type": "integer"
+        },
+        "tags": {
+          "description": "USER_TAG codes from list_style_tags, a look must carry them all",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "null",
+            "array"
+          ]
         }
       },
       "type": "object"

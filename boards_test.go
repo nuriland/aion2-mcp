@@ -8,49 +8,56 @@ import (
 )
 
 func TestListPostsLimit(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
 
-	all := structured[list[aion2.Post]](t, h.call(t, "list_posts", map[string]any{"board": "update", "limit": 200}))
-	if len(all.Items) < 2 || all.Truncated {
-		t.Fatalf("got %d posts, truncated %v", len(all.Items), all.Truncated)
+	all, err := listPosts(ctx, eu, postsArgs{boardArgs: boardArgs{Board: aion2.BoardPatchNotes}, Limit: 200})
+	if err != nil || len(all.Items) < 2 || all.Truncated {
+		t.Fatalf("%v: %d posts, truncated %v", err, len(all.Items), all.Truncated)
 	}
 
-	one := structured[list[aion2.Post]](t, h.call(t, "list_posts", map[string]any{"board": "update", "limit": 1}))
-	if len(one.Items) != 1 || !one.Truncated || one.Items[0].ID != all.Items[0].ID {
-		t.Errorf("limit 1: %d posts, truncated %v", len(one.Items), one.Truncated)
+	one, err := listPosts(ctx, eu, postsArgs{boardArgs: boardArgs{Board: aion2.BoardPatchNotes}, Limit: 1})
+	if err != nil || len(one.Items) != 1 || !one.Truncated || one.Items[0].ID != all.Items[0].ID {
+		t.Errorf("limit 1: %v, %d posts, truncated %v", err, len(one.Items), one.Truncated)
 	}
 }
 
 func TestGetPost(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
+	args := postArgs{boardArgs: boardArgs{Board: aion2.BoardPatchNotes}, ID: "6ab2d738a279104f7d9d5d5b"}
 
-	type post struct {
-		Title string `json:"title"`
-		HTML  string `json:"html"`
-		Text  string `json:"text"`
+	plain, err := getPost(ctx, eu, args)
+	if err != nil {
+		t.Fatal(err)
 	}
-	plain := structured[post](t, h.call(t, "get_post", map[string]any{"board": "update", "id": "6ab2d738a279104f7d9d5d5b"}))
 	if plain.HTML != "" || plain.Title == "" || strings.Contains(plain.Text, "<") {
 		t.Errorf("text format: title %q, html %d bytes, text %q", plain.Title, len(plain.HTML), plain.Text)
 	}
 
-	raw := structured[post](t, h.call(t, "get_post", map[string]any{"board": "update", "id": "6ab2d738a279104f7d9d5d5b", "format": "html"}))
+	args.Format = "html"
+	raw, err := getPost(ctx, eu, args)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if !strings.HasPrefix(raw.HTML, "<") || raw.Text != "" {
 		t.Errorf("html format: html %d bytes, text %q", len(raw.HTML), raw.Text)
 	}
 }
 
 func TestPinnedPostsAndComments(t *testing.T) {
-	h := start(t)
+	ctx := t.Context()
 
-	pinned := structured[list[aion2.Post]](t, h.call(t, "list_pinned_posts", map[string]any{"board": "notice"}))
-	if len(pinned.Items) == 0 {
-		t.Error("nothing pinned")
+	if pinned, err := listPinnedPosts(ctx, eu, boardArgs{Board: aion2.BoardNotices}); err != nil || len(pinned.Items) == 0 {
+		t.Errorf("pinned: %v, %d posts", err, len(pinned.Items))
 	}
 
-	all := structured[list[aion2.Comment]](t, h.call(t, "list_comments", map[string]any{"board": "free", "postId": "x", "limit": 200}))
-	one := structured[list[aion2.Comment]](t, h.call(t, "list_comments", map[string]any{"board": "free", "postId": "x", "limit": 1}))
-	if len(all.Items) < 2 || all.Truncated || len(one.Items) != 1 || !one.Truncated || one.Items[0].ID != all.Items[0].ID {
-		t.Errorf("all %d (truncated %v), limit 1: %d (truncated %v)", len(all.Items), all.Truncated, len(one.Items), one.Truncated)
+	args := commentsArgs{boardArgs: boardArgs{Board: aion2.BoardFree}, PostID: "x", Limit: 200}
+	all, err := listComments(ctx, eu, args)
+	if err != nil {
+		t.Fatal(err)
+	}
+	args.Limit = 1
+	one, err := listComments(ctx, eu, args)
+	if err != nil || len(all.Items) < 2 || all.Truncated || len(one.Items) != 1 || !one.Truncated || one.Items[0].ID != all.Items[0].ID {
+		t.Errorf("all %d (truncated %v), limit 1: %v, %d (truncated %v)", len(all.Items), all.Truncated, err, len(one.Items), one.Truncated)
 	}
 }

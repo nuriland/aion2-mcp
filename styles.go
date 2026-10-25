@@ -10,7 +10,8 @@ import (
 
 func styleTools(s *mcp.Server, cs *clients) {
 	add(s, cs, "top_styles", "The styleshop's top 50 looks of a period, by downloads or likes", topStyles)
-	add(s, cs, "search_styles", "Search the styleshop's looks", searchStyles)
+	add(s, cs, "search_styles", "Search the styleshop's looks by a word, tags, class or gender", searchStyles)
+	add(s, cs, "list_style_tags", "What search_styles filters on: the tags, then the classes, then the genders, with localized names", listStyleTags)
 	add(s, cs, "get_style", "One style's text, tags and what the character wore, slot by slot", getStyle)
 	add(s, cs, "list_style_comments", "The comments under a style, newest first. NC serves them all, limit only trims the reply", listStyleComments)
 }
@@ -27,7 +28,9 @@ type searchStylesArgs struct {
 	scope
 
 	Keyword string     `json:"keyword,omitempty"`
-	Field   styleField `json:"field,omitempty" jsonschema:"match the character's name, an item worn or a tag, empty is title and text"`
+	Field   styleField `json:"field,omitempty" jsonschema:"where keyword matches: title (the default), name for the character's or item for a worn piece's"`
+	Tags    []string   `json:"tags,omitempty" jsonschema:"USER_TAG codes from list_style_tags, a look must carry them all"`
+	Class   string     `json:"class,omitempty" jsonschema:"a CLASS code from list_style_tags, like GLADIATOR"`
 	Gender  gender     `json:"gender,omitempty" jsonschema:"empty is both"`
 	Page    pageNumber `json:"page,omitempty" jsonschema:"from 1"`
 	Size    styleSize  `json:"size,omitempty" jsonschema:"default 20, up to 100"`
@@ -47,15 +50,17 @@ type styleCommentsArgs struct {
 
 // @TODO: documentation
 
-func topStyles(ctx context.Context, c aion2.Aion2Client, args topStylesArgs) (list[aion2.StyleSummary], error) {
+func topStyles(ctx context.Context, c *aion2.Client, args topStylesArgs) (list[aion2.StyleSummary], error) {
 	styles, err := c.TopStyles(ctx, aion2.StyleTop{SortBy: string(args.SortBy), Period: string(args.Period), Gender: string(args.Gender)})
 	return list[aion2.StyleSummary]{Items: styles}, err
 }
 
-func searchStyles(ctx context.Context, c aion2.Aion2Client, args searchStylesArgs) (page[aion2.StyleSummary], error) {
+func searchStyles(ctx context.Context, c *aion2.Client, args searchStylesArgs) (page[aion2.StyleSummary], error) {
 	p, err := c.SearchStyles(ctx, aion2.StyleSearch{
 		Keyword: args.Keyword,
 		Field:   string(args.Field),
+		Tags:    args.Tags,
+		Class:   args.Class,
 		Gender:  string(args.Gender),
 		Page:    int(args.Page),
 		Size:    int(args.Size),
@@ -66,11 +71,16 @@ func searchStyles(ctx context.Context, c aion2.Aion2Client, args searchStylesArg
 	return pageOf(p), nil
 }
 
-func getStyle(ctx context.Context, c aion2.Aion2Client, args styleArgs) (*aion2.Style, error) {
+func listStyleTags(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.StyleTag], error) {
+	tags, err := c.StyleTags(ctx)
+	return list[aion2.StyleTag]{Items: tags}, err
+}
+
+func getStyle(ctx context.Context, c *aion2.Client, args styleArgs) (*aion2.Style, error) {
 	return c.Style(ctx, args.ID)
 }
 
-func listStyleComments(ctx context.Context, c aion2.Aion2Client, args styleCommentsArgs) (list[aion2.Comment], error) {
+func listStyleComments(ctx context.Context, c *aion2.Client, args styleCommentsArgs) (list[aion2.Comment], error) {
 	comments, err := c.StyleComments(ctx, args.ID)
 	return truncate(comments, args.Limit), err
 }

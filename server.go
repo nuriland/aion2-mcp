@@ -32,7 +32,7 @@ func newServer(cs *clients) *mcp.Server {
 }
 
 // add registers a tool that calls one region
-func add[Args scoped, Out any](s *mcp.Server, cs *clients, name, description string, h func(context.Context, aion2.Aion2Client, Args) (Out, error)) {
+func add[Args scoped, Out any](s *mcp.Server, cs *clients, name, description string, h func(context.Context, *aion2.Client, Args) (Out, error)) {
 	t := tool(name, description)
 	t.InputSchema, t.OutputSchema = schemaOf[Args](), schemaOf[Out]()
 
