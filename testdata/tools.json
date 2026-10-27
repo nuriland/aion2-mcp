@@ -1094,7 +1094,7 @@
       "additionalProperties": false,
       "properties": {
         "boardId": {
-          "description": "a daevanion id from get_character. Global also answers 65 (Ariel), every node closed so far, and 404s from 67 up",
+          "description": "a daevanion id from get_character",
           "type": "integer"
         },
         "characterId": {
@@ -1269,7 +1269,7 @@
       "readOnlyHint": true,
       "title": "Get equipment"
     },
-    "description": "A character's worn gear, skins, pet, wings and skills. A slot opens get_equipped_item",
+    "description": "A character's worn gear, skins, pet, wings and skills. A worn slot opens get_equipped_item, a skin does not",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -2952,7 +2952,7 @@
       "readOnlyHint": true,
       "title": "List comments"
     },
-    "description": "The comments under a post, newest first, each followed by its replies. NC serves them all, limit only trims the reply",
+    "description": "The comments under a post, newest first, each followed by its replies. NC serves them all, limit only trims the reply. It refuses the comments on Global's update board without a login",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -4575,7 +4575,7 @@
       "readOnlyHint": true,
       "title": "Suggest items"
     },
-    "description": "The item page's autocomplete, up to 10 item names without ids",
+    "description": "The item page's autocomplete, up to 10 item names without ids. TW only, like search_items",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {

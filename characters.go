@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"fmt"
@@ -17,7 +18,7 @@ func characterTools(s *mcp.Server, cs *clients) {
 	add(s, cs, "search_characters", "Search characters by name. KR and TW search one race at a time, so they need raceId. "+
 		"Each hit's ref opens get_character, get_equipment and get_daevanion", searchCharacters)
 	add(s, cs, "get_character", "A character's profile, stats, titles, rankings and Daevanion board progress", getCharacter)
-	add(s, cs, "get_equipment", "A character's worn gear, skins, pet, wings and skills. A slot opens get_equipped_item", getEquipment)
+	add(s, cs, "get_equipment", "A character's worn gear, skins, pet, wings and skills. A worn slot opens get_equipped_item, a skin does not", getEquipment)
 	add(s, cs, "get_equipped_item", "One worn item in full, at the enchant level get_equipment shows: its stats, random rolls, magic stones and god stones", getEquippedItem)
 	add(s, cs, "get_daevanion", "One of a character's Daevanion boards: every node, open or not, and the effects the open ones give", getDaevanion)
 }
@@ -71,6 +72,11 @@ func searchCharacters(ctx context.Context, c *aion2.Client, args searchCharacter
 	if err != nil {
 		return page[aion2.CharacterSummary]{}, err
 	}
+	if len(p.Items) == 0 && args.ServerID != 0 {
+		if err := unknownServer(ctx, c, args.ServerID); err != nil {
+			return page[aion2.CharacterSummary]{}, err
+		}
+	}
 	return pageOf(p), nil
 }
 
@@ -90,12 +96,12 @@ func getEquippedItem(ctx context.Context, c *aion2.Client, args equippedItemArgs
 	if err != nil {
 		return nil, args.blame(ctx, c, err)
 	}
-	for _, slot := range slices.Concat(equipment.Slots, equipment.Skins) {
+	for _, slot := range equipment.Slots { // not the skins, which NC answers with a 404
 		if slot.ItemID == args.ItemID && slot.SlotPos == args.SlotPos {
 			return c.EquippedItem(ctx, args.ref(), slot)
 		}
 	}
-	return nil, fmt.Errorf("%w: item %d is not worn in slot %d, get_equipment has what is", aion2.ErrNotFound, args.ItemID, args.SlotPos)
+	return nil, fmt.Errorf("%w: item %d is not worn in slot %d, get_equipment's slots have what is and skins do not open", aion2.ErrNotFound, args.ItemID, args.SlotPos)
 }
 
 func getDaevanion(ctx context.Context, c *aion2.Client, args daevanionArgs) (*aion2.DaevanionBoard, error) {
@@ -108,9 +114,14 @@ func (args characterArgs) blame(ctx context.Context, c *aion2.Client, err error)
 	if !errors.Is(err, aion2.ErrNotFound) {
 		return err
 	}
-	servers, serr := c.Servers(ctx)
-	if serr != nil || slices.ContainsFunc(servers, func(s aion2.Server) bool { return s.ServerID == args.ServerID }) {
-		return err
+	return cmp.Or(unknownServer(ctx, c, args.ServerID), err)
+}
+
+// unknownServer is an error when the region has no server id, which NC answers with a not found, or a search on it with nothing
+func unknownServer(ctx context.Context, c *aion2.Client, id int) error {
+	servers, err := c.Servers(ctx)
+	if err != nil || slices.ContainsFunc(servers, func(s aion2.Server) bool { return s.ServerID == id }) {
+		return nil
 	}
-	return fmt.Errorf("%w: no server %d on %s, list_servers has them", aion2.ErrNotFound, args.ServerID, c.Region())
+	return fmt.Errorf("%w: no server %d on %s, list_servers has them", aion2.ErrNotFound, id, c.Region())
 }

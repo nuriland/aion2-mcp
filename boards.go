@@ -12,7 +12,8 @@ func boardTools(s *mcp.Server, cs *clients) {
 	add(s, cs, "list_posts", "A board's posts, newest first, without their bodies", listPosts)
 	add(s, cs, "list_pinned_posts", "The posts NC pinned above a board", listPinnedPosts)
 	add(s, cs, "get_post", "One post with its body", getPost)
-	add(s, cs, "list_comments", "The comments under a post, newest first, each followed by its replies. NC serves them all, limit only trims the reply", listComments)
+	add(s, cs, "list_comments", "The comments under a post, newest first, each followed by its replies. NC serves them all, limit only trims the reply. "+
+		"It refuses the comments on Global's update board without a login", listComments)
 }
 
 type boardArgs struct {

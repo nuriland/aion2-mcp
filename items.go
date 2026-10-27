@@ -11,7 +11,7 @@ import (
 
 func itemTools(s *mcp.Server, cs *clients) {
 	add(s, cs, "search_items", "Search the item catalog. TW only, KR and Global have no catalog", searchItems)
-	add(s, cs, "suggest_items", "The item page's autocomplete, up to 10 item names without ids", suggestItems)
+	add(s, cs, "suggest_items", "The item page's autocomplete, up to 10 item names without ids. TW only, like search_items", suggestItems)
 	add(s, cs, "get_item", "An item's definition at +0 (stats, roll ranges, slots, sources). KR and TW only, NC took it off Global, "+
 		"but TW's knows Global's item ids and answers in Chinese", getItem)
 	add(s, cs, "list_item_grades", "The grade ids search_items takes, with their localized names", listItemGrades)

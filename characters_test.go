@@ -57,5 +57,9 @@ func TestUnknownServer(t *testing.T) {
 		if !errors.Is(err, aion2.ErrNotFound) || strings.Contains(err.Error(), "no server 9999") != c.blamed {
 			t.Errorf("server %d: %v", c.serverID, err)
 		}
+		found, err := searchCharacters(t.Context(), eu, searchCharactersArgs{Keyword: "nobody", ServerID: c.serverID})
+		if c.blamed && !errors.Is(err, aion2.ErrNotFound) || !c.blamed && (err != nil || found.Items == nil) {
+			t.Errorf("search on server %d: %v, %v", c.serverID, err, found.Items)
+		}
 	}
 }
