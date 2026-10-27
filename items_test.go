@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	aion2 "github.com/nuriland/aion2-api"
@@ -36,5 +37,23 @@ func TestItemTools(t *testing.T) {
 	}
 	if _, err := getItem(ctx, eu, itemArgs{ID: 110120001}); !errors.Is(err, aion2.ErrFeatureUnavailable) {
 		t.Errorf("EU item: %v", err)
+	}
+}
+
+func TestItemFilters(t *testing.T) {
+	for _, c := range []struct {
+		args searchItemsArgs
+		err  string
+	}{
+		{searchItemsArgs{Query: nothing, Grade: "Epic", Category: "Equip_Weapon", SubCategory: "Greatsword"}, ""},
+		{searchItemsArgs{Query: nothing, Grade: "Heroic"}, `no grade "Heroic", it takes Common, Rare, Legend, Unique, Epic`},
+		{searchItemsArgs{Query: nothing, Category: "Weapons"}, `no category "Weapons"`},
+		{searchItemsArgs{Query: nothing, Category: "Equip_Armor", SubCategory: "Greatsword"}, `no subCategory "Greatsword", it takes Helmet, Shoulder`},
+		{searchItemsArgs{Query: nothing, SubCategory: "Shoulder"}, ""},
+	} {
+		found, err := searchItems(t.Context(), tw, c.args)
+		if c.err == "" && (err != nil || found.Items == nil) || c.err != "" && (err == nil || !strings.Contains(err.Error(), c.err)) {
+			t.Errorf("%+v: %v, items %v", c.args, err, found.Items)
+		}
 	}
 }

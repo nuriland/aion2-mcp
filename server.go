@@ -5,7 +5,9 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"net/http"
 	"reflect"
+	"slices"
 	"strings"
 
 	"github.com/google/jsonschema-go/jsonschema"
@@ -80,6 +82,11 @@ func tool(name, description string) *mcp.Tool {
 
 // explain adds what to do next to the errors a model can act on
 func explain(err error) error {
+	var e *aion2.APIError
+	if errors.As(err, &e) && e.StatusCode == http.StatusNotFound {
+		e.Body = ""
+	}
+
 	var hint string
 	switch {
 	case errors.Is(err, aion2.ErrNoRoute):
@@ -113,12 +120,26 @@ type page[T any] struct {
 }
 
 func pageOf[T any](p *aion2.Paged[T]) page[T] {
-	return page[T]{Page: p.Page.Page, Size: p.Page.Size, Total: p.Page.Total, LastPage: p.Page.LastPage, Items: p.Items}
+	return page[T]{Page: p.Page.Page, Size: p.Page.Size, Total: p.Page.Total, LastPage: p.Page.LastPage, Items: listOf(p.Items).Items}
+}
+
+func listOf[T any](items []T) list[T] {
+	if items == nil {
+		items = []T{}
+	}
+	return list[T]{Items: items}
 }
 
 func truncate[T any](items []T, limit listLimit) list[T] {
 	if n := limit.or(defaultLimit); len(items) > n {
 		return list[T]{Items: items[:n], Truncated: true}
 	}
-	return list[T]{Items: items}
+	return listOf(items)
+}
+
+func unknown(filter, v string, values []string) error {
+	if v == "" || slices.Contains(values, v) {
+		return nil
+	}
+	return fmt.Errorf("aion2: no %s %q, it takes %s", filter, v, strings.Join(values, ", "))
 }

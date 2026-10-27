@@ -51,7 +51,7 @@ type postText struct {
 // listPosts stops paging the board once it has the limit
 func listPosts(ctx context.Context, c *aion2.Client, args postsArgs) (list[aion2.Post], error) {
 	var (
-		out list[aion2.Post]
+		out = listOf[aion2.Post](nil)
 		n   = args.Limit.or(defaultLimit)
 	)
 	for post, err := range c.Posts(ctx, args.Board) {
@@ -70,7 +70,7 @@ func listPosts(ctx context.Context, c *aion2.Client, args postsArgs) (list[aion2
 
 func listPinnedPosts(ctx context.Context, c *aion2.Client, args boardArgs) (list[aion2.Post], error) {
 	posts, err := c.PinnedPosts(ctx, args.Board)
-	return list[aion2.Post]{Items: posts}, err
+	return listOf(posts), err
 }
 
 // getPost flattens the body to text unless html was asked for

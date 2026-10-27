@@ -37,6 +37,7 @@ type regionInfo struct {
 	Features []aion2.Feature `json:"features"`
 	Region   aion2.Region    `json:"region"`
 	Default  bool            `json:"default,omitempty"`
+	Note     string          `json:"note,omitempty"`
 }
 
 func listRegions(cs *clients) (list[regionInfo], error) {
@@ -48,6 +49,9 @@ func listRegions(cs *clients) (list[regionInfo], error) {
 		}
 
 		info := regionInfo{Region: r, Default: r == cs.region}
+		if r == aion2.RegionKR {
+			info.Note = "Only news and styles answer from outside Korea, the rest is geofenced and fails with \"does not serve this route\""
+		}
 		for _, f := range features {
 			if client.Supports(f) {
 				info.Features = append(info.Features, f)
@@ -60,18 +64,18 @@ func listRegions(cs *clients) (list[regionInfo], error) {
 
 func listServers(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.Server], error) {
 	servers, err := c.Servers(ctx)
-	return list[aion2.Server]{Items: servers}, err
+	return listOf(servers), err
 }
 
 func listClasses(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.Class], error) {
 	classes, err := c.Classes(ctx)
-	return list[aion2.Class]{Items: classes}, err
+	return listOf(classes), err
 }
 
 func getRankings(ctx context.Context, c *aion2.Client, args rankingArgs) (*aion2.RankingPage, error) {
 	contents, ok := rankingBoards[args.Contents]
 	if !ok {
-		return nil, fmt.Errorf("no ranking board %q", args.Contents)
+		return nil, fmt.Errorf("aion2: no ranking board %q", args.Contents)
 	}
 	return c.Rankings(ctx, aion2.RankingQuery{
 		ContentsType: contents,

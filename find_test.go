@@ -2,12 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"testing"
+
+	aion2 "github.com/nuriland/aion2-api"
 )
 
 // noGear is a made-up characterId the fake NC serves a profile for, but refuses equipment
@@ -124,7 +127,7 @@ func TestFindCharacter(t *testing.T) {
 		t.Errorf("no exact match should list the near misses: %v, %+v", err, got)
 	}
 
-	if _, err := findCharacter(ctx, tw, findArgs{Name: "Alpha", Server: "Israphel"}); err == nil || !strings.Contains(err.Error(), "list_servers") {
+	if _, err := findCharacter(ctx, tw, findArgs{Name: "Alpha", Server: "Israphel"}); !errors.Is(err, aion2.ErrNotFound) || !strings.Contains(err.Error(), "servers are 시엘") {
 		t.Errorf("unknown server: %v", err)
 	}
 }

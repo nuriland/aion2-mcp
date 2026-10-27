@@ -42,7 +42,7 @@
           "type": "string"
         },
         "server": {
-          "description": "the server's name, short name or id, as list_servers gives them (empty searches every server)",
+          "description": "the server's name, short name or id, as list_servers gives them in the same locale (empty searches every server)",
           "type": "string"
         }
       },
@@ -1094,7 +1094,7 @@
       "additionalProperties": false,
       "properties": {
         "boardId": {
-          "description": "a daevanion id from get_character",
+          "description": "a daevanion id from get_character. Global also answers 65 (Ariel), every node closed so far, and 404s from 67 up",
           "type": "integer"
         },
         "characterId": {
@@ -1596,17 +1596,13 @@
       "readOnlyHint": true,
       "title": "Get equipped item"
     },
-    "description": "One worn item in full: its stats, random rolls, magic stones and god stones",
+    "description": "One worn item in full, at the enchant level get_equipment shows: its stats, random rolls, magic stones and god stones",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
         "characterId": {
           "description": "the ref's characterId, or the id from a profile URL",
           "type": "string"
-        },
-        "enchantLevel": {
-          "description": "the slot's enchantLevel from get_equipment",
-          "type": "integer"
         },
         "itemId": {
           "description": "the slot's id from get_equipment",
@@ -1989,7 +1985,7 @@
       "readOnlyHint": true,
       "title": "Get item"
     },
-    "description": "An item's definition at +0 (stats, roll ranges, slots, sources). KR and TW only, NC took it off Global",
+    "description": "An item's definition at +0 (stats, roll ranges, slots, sources). KR and TW only, NC took it off Global, but TW's knows Global's item ids and answers in Chinese",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -2238,7 +2234,7 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
           "enum": [
             "notice",
             "update",
@@ -2333,7 +2329,7 @@
           ]
         },
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
           "enum": [
             "notice",
             "update",
@@ -2961,7 +2957,7 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
           "enum": [
             "notice",
             "update",
@@ -3271,7 +3267,7 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
           "enum": [
             "notice",
             "update",
@@ -3357,7 +3353,7 @@
                 ]
               },
               "board": {
-                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+                "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
                 "enum": [
                   "notice",
                   "update",
@@ -3455,7 +3451,7 @@
       "additionalProperties": false,
       "properties": {
         "board": {
-          "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+          "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
           "enum": [
             "notice",
             "update",
@@ -3547,7 +3543,7 @@
                 ]
               },
               "board": {
-                "description": "notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'",
+                "description": "notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far",
                 "enum": [
                   "notice",
                   "update",
@@ -3664,6 +3660,9 @@
                   "null",
                   "array"
                 ]
+              },
+              "note": {
+                "type": "string"
               },
               "region": {
                 "type": "string"
@@ -4018,7 +4017,7 @@
       "readOnlyHint": true,
       "title": "Search characters"
     },
-    "description": "Search characters by name. Each hit's ref opens get_character, get_equipment and get_daevanion",
+    "description": "Search characters by name. KR and TW search one race at a time, so they need raceId. Each hit's ref opens get_character, get_equipment and get_daevanion",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {

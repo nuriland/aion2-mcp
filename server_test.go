@@ -26,6 +26,8 @@ var update = flag.Bool("update", false, "rewrite the golden files in testdata")
 const (
 	fixtures  = "testdata"      // NC as the SDK's own tests record it
 	geofenced = "outside-korea" // geofenced is a made-up characterId the fake NC answers with the 404 KR gives everyone outside Korea
+	missing   = "missing"       // a made-up characterId the fake NC answers with a plain 404
+	nothing   = "nothing"       // a keyword the fake NC finds no items or styles for
 )
 
 var (
@@ -89,6 +91,8 @@ func fixtureFor(p string, q url.Values) string {
 		return "ranking.json"
 	case strings.HasSuffix(p, "/gameconst/item"):
 		return "item.json"
+	case strings.HasSuffix(p, "/dict/search/item") && q.Get("searchKeyword") == nothing:
+		return "items_empty.json"
 	case strings.HasSuffix(p, "/dict/search/item/suggest"):
 		return "suggest.json"
 	case strings.HasSuffix(p, "/dict/search/item"):
@@ -105,6 +109,8 @@ func fixtureFor(p string, q url.Values) string {
 		return "style_tags.json"
 	case strings.HasPrefix(p, "/styleshop/board/"):
 		return "style.json"
+	case strings.HasPrefix(p, "/styleshop/") && q.Get("keyword") == nothing:
+		return "styles_empty.json"
 	case strings.HasPrefix(p, "/styleshop/") && q.Get("page") == "1":
 		return "styles_page2.json"
 	case strings.HasPrefix(p, "/styleshop/"):
@@ -137,6 +143,11 @@ func (n *nc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		(r.URL.Query().Get("characterId") == noGear && strings.HasSuffix(r.URL.Path, "/character/equipment")) {
 		w.WriteHeader(http.StatusNotFound)
 		io.WriteString(w, `{"status":404,"result":{"exceptionClassName":"NoResourceFoundException"}}`)
+		return
+	}
+	if r.URL.Query().Get("characterId") == missing {
+		w.WriteHeader(http.StatusNotFound)
+		io.WriteString(w, `{"status":404}`)
 		return
 	}
 	if strings.Contains(r.URL.Path, "/search/") && searches[r.URL.Query().Get("keyword")] != nil {
@@ -260,7 +271,8 @@ func TestErrorsCarryAHint(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if msg := res.Content[0].(*mcp.TextContent).Text; !res.IsError || !strings.Contains(msg, "does not serve this route") || !strings.Contains(msg, "outside Korea") {
+	if msg := res.Content[0].(*mcp.TextContent).Text; !res.IsError || !strings.Contains(msg, "does not serve this route") || !strings.Contains(msg, "outside Korea") ||
+		strings.Contains(msg, "exceptionClassName") {
 		t.Errorf("error %v: %s", res.IsError, msg)
 	}
 }

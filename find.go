@@ -13,7 +13,7 @@ import (
 type findArgs struct {
 	scope
 	Name   string `json:"name" jsonschema:"the character's exact name, case does not matter"`
-	Server string `json:"server,omitempty" jsonschema:"the server's name, short name or id, as list_servers gives them (empty searches every server)"`
+	Server string `json:"server,omitempty" jsonschema:"the server's name, short name or id, as list_servers gives them in the same locale (empty searches every server)"`
 }
 
 // found is one character in full, or the near misses when the name matched nobody exactly, or more than one
@@ -111,7 +111,7 @@ func findCharacter(ctx context.Context, c *aion2.Client, args findArgs) (*found,
 	return out, nil
 }
 
-// serverNamed matches a server by name, short name or id.
+// serverNamed matches a server by name, short name or id. The names are in the client's locale
 func serverNamed(ctx context.Context, c *aion2.Client, name string) (aion2.Server, error) {
 	servers, err := c.Servers(ctx)
 	if err != nil {
@@ -119,10 +119,14 @@ func serverNamed(ctx context.Context, c *aion2.Client, name string) (aion2.Serve
 	}
 
 	name = strings.TrimSpace(name)
-	for _, s := range servers {
+	names := make([]string, len(servers))
+	for i, s := range servers {
 		if strings.EqualFold(s.Name, name) || strings.EqualFold(s.ShortName, name) || strconv.Itoa(s.ServerID) == name {
 			return s, nil
 		}
+		names[i] = s.Name
 	}
-	return aion2.Server{}, fmt.Errorf("no server %q on %s. list_servers has their names, which are in the region's language", name, c.Region())
+
+	return aion2.Server{}, fmt.Errorf("%w: no server %q on %s. In %s its servers are %s, and an id works in any locale",
+		aion2.ErrNotFound, name, c.Region(), c.Locale(), strings.Join(names, ", "))
 }

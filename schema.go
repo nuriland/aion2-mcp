@@ -62,7 +62,7 @@ var rankingBoards = map[rankingBoard]aion2.RankingContents{
 var schemas = map[reflect.Type]*jsonschema.Schema{
 	reflect.TypeFor[aion2.Region](): enum("the region, empty is the server's default", regions...),
 	reflect.TypeFor[aion2.Locale](): enum("the labels' language, empty is the region's own. Global takes en, de, es, fr, ja and pt-BR", locales...),
-	reflect.TypeFor[aion2.Board]():  enum("notice, update (patch notes) and cm_story are NC's. Free, member_recruit, qnanknowhow (questions and tips) and image are the players'", boards...),
+	reflect.TypeFor[aion2.Board]():  enum("notice, update (patch notes) and cm_story are NC's, free, member_recruit, qnanknowhow (questions and tips) and image the players'. Global has only notice and update so far", boards...),
 
 	reflect.TypeFor[pageNumber](): count(0),
 	reflect.TypeFor[pageSize]():   count(200),

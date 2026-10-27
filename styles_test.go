@@ -2,6 +2,7 @@ package main
 
 import (
 	"slices"
+	"strings"
 	"testing"
 )
 
@@ -28,5 +29,22 @@ func TestStyleTools(t *testing.T) {
 	}
 	if replies, err := listStyleComments(ctx, eu, styleCommentsArgs{styleArgs: styleArgs{ID: "x"}, Limit: 1}); err != nil || len(replies.Items) != 1 || !replies.Truncated {
 		t.Errorf("limit 1: %v, %d comments, truncated %v", err, len(replies.Items), replies.Truncated)
+	}
+}
+
+func TestStyleFilters(t *testing.T) {
+	for _, c := range []struct {
+		args searchStylesArgs
+		err  string
+	}{
+		{searchStylesArgs{Keyword: nothing, Tags: []string{"LOVELY"}, Class: "GLADIATOR"}, ""},
+		{searchStylesArgs{Keyword: nothing, Tags: []string{"lovely"}, Class: "gladiator"}, ""}, // NC reads the codes in any case
+		{searchStylesArgs{Keyword: nothing, Tags: []string{"LOVELY", "CUTE"}}, `no tag "CUTE", it takes LOVELY, SEXY`},
+		{searchStylesArgs{Keyword: nothing, Class: "Mage"}, `no class "MAGE", it takes GLADIATOR, TEMPLAR`},
+	} {
+		found, err := searchStyles(t.Context(), eu, c.args)
+		if c.err == "" && (err != nil || found.Items == nil) || c.err != "" && (err == nil || !strings.Contains(err.Error(), c.err)) {
+			t.Errorf("%+v: %v, items %v", c.args, err, found.Items)
+		}
 	}
 }

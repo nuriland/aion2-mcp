@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -52,7 +53,7 @@ type styleCommentsArgs struct {
 
 func topStyles(ctx context.Context, c *aion2.Client, args topStylesArgs) (list[aion2.StyleSummary], error) {
 	styles, err := c.TopStyles(ctx, aion2.StyleTop{SortBy: string(args.SortBy), Period: string(args.Period), Gender: string(args.Gender)})
-	return list[aion2.StyleSummary]{Items: styles}, err
+	return listOf(styles), err
 }
 
 func searchStyles(ctx context.Context, c *aion2.Client, args searchStylesArgs) (page[aion2.StyleSummary], error) {
@@ -68,12 +69,38 @@ func searchStyles(ctx context.Context, c *aion2.Client, args searchStylesArgs) (
 	if err != nil {
 		return page[aion2.StyleSummary]{}, err
 	}
+	if len(p.Items) == 0 {
+		if err := args.known(ctx, c); err != nil {
+			return page[aion2.StyleSummary]{}, err
+		}
+	}
 	return pageOf(p), nil
+}
+
+func (args searchStylesArgs) known(ctx context.Context, c *aion2.Client) error {
+	if len(args.Tags) == 0 && args.Class == "" {
+		return nil
+	}
+	tags, err := c.StyleTags(ctx)
+	if err != nil {
+		return err
+	}
+
+	codes := map[string][]string{} // USER_TAG, CLASS or GENDER to its codes
+	for _, tag := range tags {
+		codes[tag.Type] = append(codes[tag.Type], tag.Code)
+	}
+	for _, tag := range args.Tags {
+		if err := unknown("tag", strings.ToUpper(tag), codes["USER_TAG"]); err != nil {
+			return err
+		}
+	}
+	return unknown("class", strings.ToUpper(args.Class), codes["CLASS"])
 }
 
 func listStyleTags(ctx context.Context, c *aion2.Client, _ noArgs) (list[aion2.StyleTag], error) {
 	tags, err := c.StyleTags(ctx)
-	return list[aion2.StyleTag]{Items: tags}, err
+	return listOf(tags), err
 }
 
 func getStyle(ctx context.Context, c *aion2.Client, args styleArgs) (*aion2.Style, error) {
